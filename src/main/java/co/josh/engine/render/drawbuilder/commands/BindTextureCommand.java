@@ -9,7 +9,7 @@ public class BindTextureCommand implements DrawBuilderCommand {
         this.id = id;
     }
 
-    public void run(int GL_MODE, int i){
+    public void run(int GL_MODE, int i, float t){
         try{
             GL12.glBindTexture(GL12.GL_TEXTURE_2D, id);
         } catch (Exception e) {

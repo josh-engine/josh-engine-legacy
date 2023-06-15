@@ -8,7 +8,7 @@ public class GlBeginCommand implements DrawBuilderCommand {
 
     }
 
-    public void run(int GL_MODE, int i){
+    public void run(int GL_MODE, int i, float t){
         try{
             GL12.glBegin(GL_MODE);
         } catch (Exception e) {

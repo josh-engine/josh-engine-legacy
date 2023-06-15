@@ -21,12 +21,14 @@ public class TestTexturedQuad2 implements GameObject {
 
     ArrayList<Component> components = new ArrayList<>();
 
-    Vector3f vector3F;
+    Vector3f position;
+    Vector3f lastPosition;
 
     public int textureId;
 
     public TestTexturedQuad2(float x, float y, float z){
-        this.vector3F = new Vector3f(x, y, z);
+        this.position = new Vector3f(x, y, z);
+        this.lastPosition = new Vector3f(x, y, z);
         this.textureId = TexturePreloader.textures.get("dirt");
         this.size = 1f;
         System.out.println("Quad2:"+textureId);
@@ -42,18 +44,24 @@ public class TestTexturedQuad2 implements GameObject {
     }
 
     public Vector3f getPosition() {
-        return vector3F;
+        return position;
     }
 
-    @Override
-    public Vector3f getNextPosition() {
-        return getPosition();
+    public Vector3f getLastPosition() {
+        return lastPosition;
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
+
+    public void setLastPosition(Vector3f lastPosition) {
+        this.lastPosition = lastPosition;
     }
 
     public void movePosition(int x, int y, int z) {
-        this.vector3F.add(x, y, z);
+        this.position.add(x, y, z);
     }
-
 
     public void render() {
         DrawBuilder db = new DrawBuilder(Main.camera, GL_QUADS);
@@ -79,7 +87,7 @@ public class TestTexturedQuad2 implements GameObject {
 
         db.push(new GlEndCommand());
         db.push(new UnbindTexturesCommand());
-        db.render();
+        db.render(Main.tpsCount / (float)Main.tps);
     }
 
     @Override

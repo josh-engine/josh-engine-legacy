@@ -21,12 +21,15 @@ public class TestTexturedQuad implements GameObject {
 
     ArrayList<Component> components = new ArrayList<>();
 
-    Vector3f vector3F;
+    Vector3f position;
+    Vector3f lastPosition;
+
 
     public int textureId;
 
     public TestTexturedQuad(float x, float y, float z){
-        this.vector3F = new Vector3f(x, y, z);
+        this.position = new Vector3f(x, y, z);
+        this.lastPosition = new Vector3f(x, y, z);
         //this.textureId = TextureLoader.loadTexture(Main.dir + "/josh/e.png");
         this.textureId = TexturePreloader.textures.get("e");
         this.size = 1f;
@@ -43,16 +46,23 @@ public class TestTexturedQuad implements GameObject {
     }
 
     public Vector3f getPosition() {
-        return vector3F;
+        return position;
     }
 
-    @Override
-    public Vector3f getNextPosition() {
-        return getPosition();
+    public Vector3f getLastPosition() {
+        return lastPosition;
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
+
+    public void setLastPosition(Vector3f lastPosition) {
+        this.lastPosition = lastPosition;
     }
 
     public void movePosition(int x, int y, int z) {
-        this.vector3F.add(x, y, z);
+        this.position.add(x, y, z);
     }
 
     public void render() {
@@ -63,20 +73,24 @@ public class TestTexturedQuad implements GameObject {
 
         db.push(db.next()
                 .pos(getPosition().x - 50f, getPosition().y - 50f, getPosition().z)
+                .lastpos(getLastPosition().x - 50f, getLastPosition().y - 50f, getLastPosition().z)
                 .uv(0f, 0f));
         db.push(db.next()
                 .pos(getPosition().x + 50f, getPosition().y - 50f, getPosition().z)
+                .lastpos(getLastPosition().x + 50f, getLastPosition().y - 50f, getLastPosition().z)
                 .uv(1f, 0f));
         db.push(db.next()
                 .pos(getPosition().x + 50f, getPosition().y + 50f, getPosition().z)
+                .lastpos(getLastPosition().x + 50f, getLastPosition().y + 50f, getLastPosition().z)
                 .uv(1f, 1f));
         db.push(db.next()
                 .pos(getPosition().x - 50f, getPosition().y + 50f, getPosition().z)
+                .lastpos(getLastPosition().x - 50f, getLastPosition().y + 50f, getLastPosition().z)
                 .uv(0f, 1f));
 
         db.push(new GlEndCommand());
         db.push(new UnbindTexturesCommand());
-        db.render();
+        db.render((float)Main.tpsCount / Main.tps);
     }
 
     @Override

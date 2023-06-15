@@ -9,6 +9,9 @@ import static org.lwjgl.opengl.GL12.*;
 import co.josh.engine.Main;
 
 public class RenderDispatcher {
+     /*
+     There once was a dark time when this was useful. Luckily, no more.
+     I'm keeping it here just in case I feel the need to mess with glFrustum again.
 
      float PI_OVER_180 = 0.0174532925199432957692369076849f;
      float _180_OVER_PI =  57.2957795130823208767981548141f;
@@ -19,19 +22,19 @@ public class RenderDispatcher {
      public float RAD_TO_DEG(float x) {
          return x * _180_OVER_PI;
      }
+     */
+
 
      public boolean doPerspectiveDraw = true;
 
     public void render(long window){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer so there's no trippy shit in the skybox
 
-        //Init some render shid
-        GL12.glMatrixMode(GL_PROJECTION);
+        GL12.glMatrixMode(GL_PROJECTION); //Setting up camera
         GL12.glLoadIdentity();
 
-        //GL FLAGS! VERY IMPORTANT
-        GL12.glDisable(GL_CULL_FACE); //This is generally a bad idea for performance. I have it on for debug reasons.
-        GL12.glEnable(GL_DEPTH_TEST); //VERY IMPORTANT! Depth sorting for the camera is here.
+        GL12.glEnable(GL_CULL_FACE); //On by default for performance
+        GL12.glEnable(GL_DEPTH_TEST);
 
         if (doPerspectiveDraw){
             /*
@@ -48,11 +51,10 @@ public class RenderDispatcher {
         }
 
 
-        GL12.glMatrixMode(GL12.GL_MODELVIEW);
+        GL12.glMatrixMode(GL12.GL_MODELVIEW); //Setting up render
         GL12.glEnable(GL12.GL_TEXTURE_2D);
 
         for (GameObject gameObject : Main.gameObjects){
-            //TODO: depth sort for 2d
             gameObject.render();
         }
 

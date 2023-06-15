@@ -175,10 +175,9 @@ public class Main {
         glfwShowWindow(window);
     }
 
-    public float timeClock;
     public int fps;
     public int fpsCount;
-    public static int tps;
+    public static int tps = 20;
     public static int tpsCount;
     public float clockSubtract = 0;
 
@@ -213,7 +212,9 @@ public class Main {
             }
         });
 
-        long lastUpdateTime = System.nanoTime();
+        long tickLastUpdateTime = System.nanoTime();
+        long frameLastUpdateTime = System.nanoTime();
+
 
         try{
             runAllAnnotatedWith(startup.class);
@@ -236,9 +237,10 @@ public class Main {
             }
 
             long now = System.nanoTime();
-            long elapsedTime = now - lastUpdateTime;
+            long tickElapsedTime = now - tickLastUpdateTime;
+            long frameElapsedTime = now - frameLastUpdateTime;
 
-            if (elapsedTime >= 40000000) { //20TPS ish
+            if (tickElapsedTime >= 33333333) { //30 TPS ish because it looks smoother with 60FPS
                 //THIS IS WHERE EVERYTHING IMPORTANT HAPPENS
                 keyboard.update();
                 cur = getCursorPos();
@@ -248,7 +250,7 @@ public class Main {
                 relativeCurY = (currentHeight/(float)height)*curY;
 
                 for (GameObject gameObject : gameObjects){
-                    gameObject.getPosition().set(gameObject.getNextPosition());
+                    gameObject.setLastPosition(gameObject.getPosition());
                     gameObject.getComponents().forEach(Component::tickValues);
                 }
                 try{
@@ -258,11 +260,14 @@ public class Main {
                     return;
                 }
                 tpsCount++;
-                lastUpdateTime = now;
+                tickLastUpdateTime = now;
             }
 
-            renderSystem.render(window);
-            fpsCount++; //Rendered a frame so yeah
+            if (frameElapsedTime  >= 16666666){ //60 fps, this is (1/60)*10^9 because nanoseconds
+                renderSystem.render(window);
+                fpsCount++; //Rendered a frame so yeah
+                frameLastUpdateTime = now;
+            }
         }
     }
 }

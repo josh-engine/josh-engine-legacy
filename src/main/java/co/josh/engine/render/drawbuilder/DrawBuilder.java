@@ -40,11 +40,11 @@ public class DrawBuilder {
     }
     public void push(DrawBuilderCommand drawBuilderCommand) { drawList.add(drawBuilderCommand);}
 
-    public void render(){
+    public void render(float t){
         int total = drawList.size();
         for (int i = 0; i < total; i++){
             DrawBuilderCommand command = drawList.remove(0);
-            command.run(GL_MODE, i);
+            command.run(GL_MODE, i, t);
         }
     }
 

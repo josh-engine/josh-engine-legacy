@@ -7,7 +7,7 @@ public class GlEndCommand implements DrawBuilderCommand {
 
     }
 
-    public void run(int GL_MODE, int i){
+    public void run(int GL_MODE, int i, float t){
         try{
             GL12.glEnd();
         } catch (Exception e) {
