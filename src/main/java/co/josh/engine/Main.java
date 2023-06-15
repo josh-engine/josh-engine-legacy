@@ -102,7 +102,7 @@ public class Main {
     }
 
     private void init() {
-        System.out.println("Starting WugEngine with LWJGL " + Version.getVersion());
+        System.out.println("Starting JoshEngine with LWJGL " + Version.getVersion());
         try {
             if (Files.exists(Path.of(dir + "/wug"))){
                 System.out.println("Engine dir exists and was found.");
@@ -134,7 +134,7 @@ public class Main {
         currentHeight = height;
 
         // Create the window
-        window = glfwCreateWindow(width, height, "WugEngine", NULL, NULL);
+        window = glfwCreateWindow(width, height, "JoshEngine", NULL, NULL);
 
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
