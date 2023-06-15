@@ -1,12 +1,18 @@
 package co.josh.engine.render;
 
 import co.josh.engine.objects.o2d.GameObject;
-import org.lwjgl.opengl.GL12;
 
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL12.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL12.GL_PROJECTION;
+import static org.lwjgl.opengl.GL12.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL12.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL12.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL12.GL_DEPTH_BUFFER_BIT;
 
 import co.josh.engine.Main;
+import org.lwjgl.opengl.GL12;
 
 public class RenderDispatcher {
      /*
@@ -28,7 +34,8 @@ public class RenderDispatcher {
      public boolean doPerspectiveDraw = true;
 
     public void render(long window){
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer so there's no trippy shit in the skybox
+        //clear framebuffer. on enclosed maps this may not be needed.
+        GL12.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         GL12.glMatrixMode(GL_PROJECTION); //Setting up camera
         GL12.glLoadIdentity();
@@ -45,14 +52,14 @@ public class RenderDispatcher {
 
             TLDR: DO NOT FUCK WITH GLFRUSTUM UNLESS YOU KNOW EXACTLY WHAT IT DOES AND HOW TO USE IT
             */
-            glFrustum(-0.88f, 0.88f, -0.5f, 0.5f, 0.8f, 300.0f);
+            GL12.glFrustum(-0.88f, 0.88f, -0.5f, 0.5f, 0.8f, 300.0f);
         }else{
             GL12.glOrtho(0, Main.currentWidth, 0, Main.currentHeight, 0, -1);
         }
 
 
-        GL12.glMatrixMode(GL12.GL_MODELVIEW); //Setting up render
-        GL12.glEnable(GL12.GL_TEXTURE_2D);
+        GL12.glMatrixMode(GL_MODELVIEW); //Setting up render
+        GL12.glEnable(GL_TEXTURE_2D);
 
         for (GameObject gameObject : Main.gameObjects){
             gameObject.render();

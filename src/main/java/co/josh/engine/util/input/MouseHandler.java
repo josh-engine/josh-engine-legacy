@@ -8,10 +8,6 @@ import co.josh.engine.Main;
 import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 
 public class MouseHandler {
-
-    public MouseHandler(long window){
-        this.window = window;
-    }
     public long window;
 
     public int xPos;
@@ -19,6 +15,10 @@ public class MouseHandler {
 
     public float relativeCurX;
     public float relativeCurY;
+
+    public MouseHandler(long window){
+        this.window = window;
+    }
 
     public void update(){
         DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
