@@ -1,7 +1,7 @@
 package co.josh.engine.render;
 
 import org.joml.Matrix4f;
-import co.josh.engine.util.vector.Vector3f;
+import org.joml.Vector3f;
 
 public class Camera {
     public Vector3f position;
@@ -14,11 +14,11 @@ public class Camera {
     }
 
     public void moveWithRotation(Vector3f change){
-        position.move(change.joml_compat().mulTransposeDirection(rotationMatrix));
+        position.add(change.mulTransposeDirection(rotationMatrix));
     }
 
     public void rotate(Vector3f change){
-        rotation.move(change.x, change.y, change.z);
+        rotation.add(change.x, change.y, change.z);
         updateRotationMatrix();
     }
 

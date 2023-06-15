@@ -1,10 +1,10 @@
-package co.josh.engine.objects.o2d;
+package example;
 
-import co.josh.engine.components.TestKeyboardMovement;
+import co.josh.engine.objects.o2d.GameObject;
 import co.josh.engine.render.DrawBuilder;
-import co.josh.engine.util.vector.Vector3f;
 import co.josh.engine.Main;
 import co.josh.engine.components.Component;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class TestGradientTriangle implements GameObject {
     }
 
     public void movePosition(int x, int y, int z) {
-        this.vector3F.move(x, y, z);
+        this.vector3F.add(x, y, z);
     }
 
     public void setPosition(Vector3f vector3F1){

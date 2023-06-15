@@ -59,6 +59,7 @@ public class TextureLoader {
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width.get(0), height.get(0), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0); //unbind
+
         // Clean up
         STBImage.stbi_image_free(buf);
 

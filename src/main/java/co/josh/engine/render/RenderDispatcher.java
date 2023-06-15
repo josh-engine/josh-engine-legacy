@@ -20,6 +20,8 @@ public class RenderDispatcher {
          return x * _180_OVER_PI;
      }
 
+     public boolean doPerspectiveDraw = true;
+
     public void render(long window){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer so there's no trippy shit in the skybox
 
@@ -31,16 +33,20 @@ public class RenderDispatcher {
         GL11.glDisable(GL_CULL_FACE); //This is generally a bad idea for performance. I have it on for debug reasons.
         GL11.glEnable(GL_DEPTH_TEST); //VERY IMPORTANT! Depth sorting for the camera is here.
 
-        //GL11.glOrtho(0, Main.currentWidth, 0, Main.currentHeight, 0, -1); 2D mode. Comment glFrustum and uncomment this if you want to switch
-        /*
-        This line is stolen from the *third* page of google, after using a time machine to go back to whenever GL11 was useful.
-        I don't know what anything here does, and probably couldn't figure it out if my life depended on it.
-        GL11 is entirely outdated and I promise I will update to new stuff soon and probably code a deferred renderer.
-        Maybe.
+        if (doPerspectiveDraw){
+            /*
+            This line is stolen from the *third* page of google, after using a time machine to go back to whenever GL11 was useful.
+            I don't know what anything here does, and probably couldn't figure it out if my life depended on it.
+            GL11 is entirely outdated and I promise I will update to GL30 soon and probably code a deferred renderer.
+            Maybe.
 
-        TLDR: DO NOT FUCK WITH GLFRUSTUM UNLESS YOU KNOW EXACTLY WHAT IT DOES AND HOW TO USE IT and also I'll new-ify everything soon
-        */
-        glFrustum(-0.88f, 0.88f, -0.5f, 0.5f, 0.8f, 300.0f);
+            TLDR: DO NOT FUCK WITH GLFRUSTUM UNLESS YOU KNOW EXACTLY WHAT IT DOES AND HOW TO USE IT
+            */
+            glFrustum(-0.88f, 0.88f, -0.5f, 0.5f, 0.8f, 300.0f);
+        }else{
+            GL11.glOrtho(0, Main.currentWidth, 0, Main.currentHeight, 0, -1);
+        }
+
 
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glEnable(GL11.GL_TEXTURE_2D);

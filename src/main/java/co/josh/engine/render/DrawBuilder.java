@@ -1,9 +1,9 @@
 package co.josh.engine.render;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
-import co.josh.engine.util.vector.Vector3f;
-import co.josh.engine.util.vector.Vector4f;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,14 +32,14 @@ public class DrawBuilder {
 
     public static Vector3f rotato_potato(Vector3f start, Camera camera){
         Matrix4f rotationMatrix = camera.rotationMatrix;
-        org.joml.Vector3f relativeVector = start.joml_compat().sub(camera.position.joml_compat());
+        org.joml.Vector3f relativeVector = start.sub(camera.position);
         org.joml.Vector3f rotatedRelativeVector = new org.joml.Vector3f();
         rotationMatrix.transformPosition(relativeVector, rotatedRelativeVector);
-        return Vector3f.Vector3f_joml(new org.joml.Vector3f(rotatedRelativeVector).add(camera.position.joml_compat()));
+        return new org.joml.Vector3f(rotatedRelativeVector).add(camera.position);
     }
 
     public Vertex3F next(){
-        return new Vertex3F(new Vector3f(0f,0f,0f), new Vector4f(1f, 0f, 0f, 0f));
+        return new Vertex3F(new Vector3f(0f,0f,0f), new Vector4f(1f, 1f, 1f, 0f));
     }
 
     public void push(Vertex3F vert){

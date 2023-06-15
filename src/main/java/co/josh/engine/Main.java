@@ -7,7 +7,7 @@ import co.josh.engine.util.KeyboardHandler;
 import co.josh.engine.util.annotations.hooks.exit;
 import co.josh.engine.util.annotations.hooks.gameloop;
 import co.josh.engine.util.annotations.hooks.startup;
-import co.josh.engine.util.vector.Vector3f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
@@ -182,7 +182,7 @@ public class Main {
     public static int tpsCount;
     public float clockSubtract = 0;
 
-    RenderDispatcher renderSystem;
+    public static RenderDispatcher renderSystem;
 
     public double[] getCursorPos(){
         DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
@@ -223,9 +223,7 @@ public class Main {
         }
         Set<Method> gameloopRunnables = getAllAnnotatedWith(gameloop.class);
         double[] cur;
-        // Run the rendering loop until the user has attempted to close
-        // the window or has pressed the ESCAPE key.
-        while ( !glfwWindowShouldClose(window) ) {
+        while (!glfwWindowShouldClose(window) ) {
             if (glfwGetTime()-clockSubtract > 1f) {
                 fps = fpsCount;
                 fpsCount = 0;
