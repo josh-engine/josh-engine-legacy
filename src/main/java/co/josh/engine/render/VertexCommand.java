@@ -13,13 +13,11 @@ public class VertexCommand implements DrawBuilderCommand{
     }
 
     public void run(int GL_MODE, int i) {
+        //TODO: smoothing with lerp between ticks (so that it runs at an actual 100FPS, not just synced with the 20TPS)
         //Vector3f vertexPos = rotato_potato(Vector3f.lerp(vertex.position, vertex.nextPos, t), camera);
         Vector3f vertexPos = DrawBuilder.rotato_potato(vertex.position, Main.camera);
-        if (vertex.textured){
-            GL12.glTexCoord2f(vertex.texcoords.x, vertex.texcoords.y);
-        }else{
-            GL12.glColor4f(vertex.color.x, vertex.color.y, vertex.color.z, vertex.color.w);
-        }
+        GL12.glTexCoord2f(vertex.texcoords.x, vertex.texcoords.y);
+        GL12.glColor4f(vertex.color.x, vertex.color.y, vertex.color.z, vertex.color.w);
         GL12.glVertex3f((vertexPos.x - Main.camera.position.x)*((float) Main.currentWidth/(float)Main.width), (vertexPos.y - Main.camera.position.y)*((float)Main.currentHeight/(float)Main.height), (vertexPos.z - Main.camera.position.z)*((float)Main.currentHeight/(float)Main.height));
 
     }

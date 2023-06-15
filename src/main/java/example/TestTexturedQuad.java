@@ -1,9 +1,13 @@
 package example;
 
 import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.render.BindTextureCommand;
+import co.josh.engine.render.DrawBuilder;
+import co.josh.engine.render.UnbindTexturesCommand;
 import co.josh.engine.util.TextureLoader;
 import co.josh.engine.Main;
 import co.josh.engine.components.Component;
+import co.josh.engine.util.TexturePreloader;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 
@@ -23,8 +27,8 @@ public class TestTexturedQuad implements GameObject {
 
     public TestTexturedQuad(float x, float y, float z){
         this.vector3F = new Vector3f(x, y, z);
-        this.textureId = TextureLoader.loadTexture(Main.dir + "/josh/e.png");
-        //this.textureId = TexturePreloader.textures.get("e");
+        //this.textureId = TextureLoader.loadTexture(Main.dir + "/josh/e.png");
+        this.textureId = TexturePreloader.textures.get("e");
         this.size = 1f;
     }
 
@@ -59,20 +63,25 @@ public class TestTexturedQuad implements GameObject {
     }
 
     public void render() {
-        GL12.glBegin(GL_QUADS);
-        GL12.glBindTexture(GL12.GL_TEXTURE_2D, this.textureId);
+        DrawBuilder db = new DrawBuilder(Main.camera, GL_QUADS);
+        db.push(new UnbindTexturesCommand());
+        db.push(new BindTextureCommand(this.textureId));
 
-        GL12.glTexCoord2f(0f, 0f);
-        debug_vertex3f(getPosition().x - 50f, getPosition().y - 50f, getPosition().z);
-        GL12.glTexCoord2f(1f, 0f);
-        debug_vertex3f(getPosition().x + 50f, getPosition().y - 50f, getPosition().z);
-        GL12.glTexCoord2f(1f, 1f);
-        debug_vertex3f(getPosition().x + 50f, getPosition().y + 50f, getPosition().z);
-        GL12.glTexCoord2f(0f, 1f);
-        debug_vertex3f(getPosition().x - 50f, getPosition().y + 50f, getPosition().z);
+        db.push(db.next()
+                .pos(getPosition().x - 50f, getPosition().y - 50f, getPosition().z)
+                .uv(0f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x + 50f, getPosition().y - 50f, getPosition().z)
+                .uv(1f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x + 50f, getPosition().y + 50f, getPosition().z)
+                .uv(1f, 1f));
+        db.push(db.next()
+                .pos(getPosition().x - 50f, getPosition().y + 50f, getPosition().z)
+                .uv(0f, 1f));
 
-        GL12.glBindTexture(GL12.GL_TEXTURE_2D, 0);
-        GL12.glEnd();
+        db.push(new UnbindTexturesCommand());
+        db.render(Main.tpsCount/20f);
     }
 
     @Override

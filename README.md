@@ -9,6 +9,6 @@ Unfortunately, we all know it sucks. If you'd like to help make it suck less, he
 - Code courtesy.
   - If you have *good and efficient code*, realize Benis exists. It's shitty code if you don't at least explain the seemingly nonsensical parts.
 
-There are some exceptions. For example, the shitbucket that currently is the co.josh.engine.Vector3f/org.joml.Vector3f conversion problem. Fundamental issues as big as that are worth a couple broken things.
+Exceptions are allowed. For example, if there is a majorly broken part of JCGE that allows for cool bugs, fix it. And if you don't know why your code works but it does, just put that down in the code so people know not to touch it.
 
-glhf!
+GLHF on your contibutions!
