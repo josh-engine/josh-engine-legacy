@@ -1,17 +1,12 @@
-package co.josh.engine.util;
-import org.lwjgl.BufferUtils;
+package co.josh.engine.util.texture;
+import co.josh.engine.util.exceptions.TextureLoadFailure;
 
 import org.lwjgl.opengl.*;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class TextureLoader {
     //Thanks ChatGPT
@@ -29,7 +24,7 @@ public class TextureLoader {
             STBImage.stbi_set_flip_vertically_on_load(true);
             buf = STBImage.stbi_load(path, w, h, comp, 4);
             if (buf == null) {
-                throw new RuntimeException("Failed to load a texture file!" + System.lineSeparator() + STBImage.stbi_failure_reason());
+                throw new TextureLoadFailure(System.lineSeparator() + STBImage.stbi_failure_reason());
             }
 
             // Get image width and height

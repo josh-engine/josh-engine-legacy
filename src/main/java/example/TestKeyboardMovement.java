@@ -19,7 +19,6 @@ public class TestKeyboardMovement implements Component {
     public String getName() {
         return "TestKeyboardMovementComponent";
     }
-
     @Override
     public void tickValues() {
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_W) && parent.getPosition().y + hitboxSize < Main.height){

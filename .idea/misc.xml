@@ -2,7 +2,7 @@
 <project version="4">
   <component name="EntryPointsManager">
     <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="co.josh.engine.util.annotations.hooks.startup" />
+      <item index="0" class="java.lang.String" itemvalue="co.josh.engine.util.annotations.hooks.Startup" />
     </list>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

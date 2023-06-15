@@ -1,4 +1,4 @@
-package co.josh.engine.util;
+package co.josh.engine.util.input;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;

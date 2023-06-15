@@ -8,7 +8,7 @@ import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.render.drawbuilder.commands.GlBeginCommand;
 import co.josh.engine.render.drawbuilder.commands.GlEndCommand;
 import co.josh.engine.render.drawbuilder.commands.UnbindTexturesCommand;
-import co.josh.engine.util.TexturePreloader;
+import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;

@@ -1,10 +1,9 @@
-package co.josh.engine.util;
+package co.josh.engine.util.texture;
 
 import co.josh.engine.Main;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,14 +19,12 @@ public class TexturePreloader {
             e.printStackTrace();
             return;
         }
-        List<String> fileNames = new ArrayList<>();
         for (Path file : files){
             if (file.toFile().getName().equals(".DS_Store")){
                 continue;
             }
 
             String name = file.toFile().getName().substring(0, file.toFile().getName().indexOf("."));
-            fileNames.add(name);
             Integer textureId = TextureLoader.loadTexture(Main.dir + directory + file.toFile().getName());
             textures.put(name, textureId);
         }

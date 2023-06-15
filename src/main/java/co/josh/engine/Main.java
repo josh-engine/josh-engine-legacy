@@ -3,12 +3,13 @@ package co.josh.engine;
 import co.josh.engine.objects.o2d.GameObject;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.RenderDispatcher;
-import co.josh.engine.util.KeyboardHandler;
-import co.josh.engine.util.annotations.hooks.exit;
-import co.josh.engine.util.annotations.hooks.gameloop;
-import co.josh.engine.util.annotations.hooks.startup;
+import co.josh.engine.util.annotations.hooks.Startup;
+import co.josh.engine.util.exceptions.WindowCreateFailure;
+import co.josh.engine.util.input.KeyboardHandler;
+import co.josh.engine.util.annotations.hooks.Exit;
+import co.josh.engine.util.annotations.hooks.Gameloop;
+import co.josh.engine.util.input.MouseHandler;
 import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,12 +46,6 @@ public class Main {
 
     public static Camera camera;
 
-    public static int curX;
-    public static int curY;
-
-    public static float relativeCurX;
-    public static float relativeCurY;
-
     public static int currentWidth;
     public static int currentHeight;
 
@@ -60,11 +54,25 @@ public class Main {
     public static long window;
 
     public static KeyboardHandler keyboard;
+    public static MouseHandler mouse;
 
     public static String dir = System.getProperty("user.dir");
 
+    public int fps;
+    public int fpsCount;
+    public static int tps = 20;
+    public static int tpsCount;
+    public float clockSubtract = 0;
+
+    public static RenderDispatcher renderSystem;
+
     public void run() {
+        try{
         init();
+        } catch (WindowCreateFailure e){
+            e.printStackTrace();
+            return;
+        }
         loop();
 
         // Free the window callbacks and destroy the window
@@ -76,10 +84,9 @@ public class Main {
         glfwSetErrorCallback(null).free();
 
         try{
-            runAllAnnotatedWith(exit.class);
+            runAllAnnotatedWith(Exit.class);
         } catch (Exception e){
             e.printStackTrace();
-            return;
         }
     }
 
@@ -101,7 +108,7 @@ public class Main {
         }
     }
 
-    private void init() {
+    private void init() throws WindowCreateFailure {
         System.out.println("Starting JoshEngine with LWJGL " + Version.getVersion());
         try {
             if (Files.exists(Path.of(dir + "/wug"))){
@@ -113,7 +120,7 @@ public class Main {
 
         } catch (IOException e){
             e.printStackTrace();
-            System.out.println("Could not find engine directory or create it! Textures and outside scripts will not load!");
+            System.out.println("Could not find engine directory or create it! Textures will not load!");
         }
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -137,11 +144,13 @@ public class Main {
         window = glfwCreateWindow(width, height, "JoshEngine", NULL, NULL);
 
         if ( window == NULL )
-            throw new RuntimeException("Failed to create the GLFW window");
+            throw new WindowCreateFailure();
 
 
         //keybord
         keyboard = new KeyboardHandler(window);
+        //moose
+        mouse = new MouseHandler(window);
 
         // Get the thread stack and push a new frame
         try ( MemoryStack stack = stackPush() ) {
@@ -175,21 +184,6 @@ public class Main {
         glfwShowWindow(window);
     }
 
-    public int fps;
-    public int fpsCount;
-    public static int tps = 20;
-    public static int tpsCount;
-    public float clockSubtract = 0;
-
-    public static RenderDispatcher renderSystem;
-
-    public double[] getCursorPos(){
-        DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
-        DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
-        glfwGetCursorPos(window, xBuffer, yBuffer);
-        return new double[]{ xBuffer.get(0), yBuffer.get(0)};
-    }
-
     private void loop() {
         System.out.println("Starting game loop");
         glfwSetTime(0);
@@ -201,9 +195,9 @@ public class Main {
 
         GLFW.glfwSetFramebufferSizeCallback(window, new GLFWFramebufferSizeCallback() {
             @Override
-            public void invoke(long window, int width, int height) {
-                width = width/2;
-                height = height/2;
+            public void invoke(long window, int _width, int _height) {
+                int width = _width/2;
+                int height = _height/2;
                 if ((float)width/height>(float)Main.width/Main.height){
                     GLFW.glfwSetWindowSize(window, width, (int)(width*((float)Main.height/Main.width)));
                 } else if ((float)width/height<(float)Main.width/Main.height) {
@@ -217,13 +211,12 @@ public class Main {
 
 
         try{
-            runAllAnnotatedWith(startup.class);
+            runAllAnnotatedWith(Startup.class);
         } catch (Exception e){
             e.printStackTrace();
             return;
         }
-        Set<Method> gameloopRunnables = getAllAnnotatedWith(gameloop.class);
-        double[] cur;
+        Set<Method> gameloopRunnables = getAllAnnotatedWith(Gameloop.class);
         while (!glfwWindowShouldClose(window) ) {
             if (glfwGetTime()-clockSubtract > 1f) {
                 fps = fpsCount;
@@ -243,11 +236,7 @@ public class Main {
             if (tickElapsedTime >= 33333333) { //30 TPS ish because it looks smoother with 60FPS
                 //THIS IS WHERE EVERYTHING IMPORTANT HAPPENS
                 keyboard.update();
-                cur = getCursorPos();
-                curX = (int) cur[0];
-                curY = (int) cur[1];
-                relativeCurX = (currentWidth/(float)width)*curX;
-                relativeCurY = (currentHeight/(float)height)*curY;
+                mouse.update();
 
                 for (GameObject gameObject : gameObjects){
                     gameObject.setLastPosition(gameObject.getPosition());
