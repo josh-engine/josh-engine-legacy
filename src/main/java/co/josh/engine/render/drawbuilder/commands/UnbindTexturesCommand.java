@@ -1,4 +1,4 @@
-package co.josh.engine.render;
+package co.josh.engine.render.drawbuilder.commands;
 
 import org.lwjgl.opengl.GL12;
 

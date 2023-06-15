@@ -1,14 +1,15 @@
-package co.josh.engine.render;
+package co.josh.engine.render.drawbuilder;
 
+import co.josh.engine.render.Camera;
+import co.josh.engine.render.drawbuilder.commands.DrawBuilderCommand;
+import co.josh.engine.render.drawbuilder.commands.VertexCommand;
+import co.josh.engine.render.drawbuilder.util.Vertex3F;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL12;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.lwjgl.opengl.GL12.GL_QUADS;
 
 public class DrawBuilder {
 
@@ -20,14 +21,6 @@ public class DrawBuilder {
         this.camera = camera;
         this.GL_MODE = GL_MODE;
         this.drawList = new LinkedList<>();
-    }
-
-    public void pushQuad(Vertex3F v1, Vertex3F v2, Vertex3F v3, Vertex3F v4){
-        this.GL_MODE = GL_QUADS;
-        push(v1);
-        push(v2);
-        push(v3);
-        push(v4);
     }
 
     public static Vector3f rotato_potato(Vector3f start, Camera camera){
@@ -47,14 +40,12 @@ public class DrawBuilder {
     }
     public void push(DrawBuilderCommand drawBuilderCommand) { drawList.add(drawBuilderCommand);}
 
-    public void render(float t){
-        GL12.glBegin(GL_MODE);
+    public void render(){
         int total = drawList.size();
         for (int i = 0; i < total; i++){
             DrawBuilderCommand command = drawList.remove(0);
             command.run(GL_MODE, i);
         }
-        GL12.glEnd();
     }
 
 

@@ -1,12 +1,12 @@
-package co.josh.engine.render;
+package co.josh.engine.render.drawbuilder.commands;
 
+import co.josh.engine.render.drawbuilder.DrawBuilder;
+import co.josh.engine.render.drawbuilder.util.Vertex3F;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 import co.josh.engine.Main;
 
-import static org.lwjgl.opengl.GL12.*;
-
-public class VertexCommand implements DrawBuilderCommand{
+public class VertexCommand implements DrawBuilderCommand {
     public Vertex3F vertex;
     public VertexCommand(Vertex3F vertex){
         this.vertex = vertex;
