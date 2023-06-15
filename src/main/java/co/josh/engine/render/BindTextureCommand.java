@@ -1,6 +1,6 @@
 package co.josh.engine.render;
 
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class BindTextureCommand implements DrawBuilderCommand {
     public int id;
@@ -11,9 +11,9 @@ public class BindTextureCommand implements DrawBuilderCommand {
 
     public void run(int GL_MODE, int i){
         try{
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+            GL12.glBindTexture(GL12.GL_TEXTURE_2D, id);
         } catch (Exception e) {
-            System.out.println("GL_ERROR BIND, ITER "+i+ " MODE "+ GL11.glGetString(GL_MODE) + " ID " + id);
+            System.out.println("GL_ERROR BIND, ITER "+i+ " MODE "+ GL12.glGetString(GL_MODE) + " ID " + id);
         }
     }
 }

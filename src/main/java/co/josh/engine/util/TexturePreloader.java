@@ -1,6 +1,5 @@
 package co.josh.engine.util;
 
-import co.josh.engine.render.TextureLoader;
 import co.josh.engine.Main;
 
 import java.nio.file.Files;

@@ -3,12 +3,12 @@ package co.josh.engine.render;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL12.GL_QUADS;
 
 public class DrawBuilder {
 
@@ -48,13 +48,13 @@ public class DrawBuilder {
     public void push(DrawBuilderCommand drawBuilderCommand) { drawList.add(drawBuilderCommand);}
 
     public void render(float t){
-        GL11.glBegin(GL_MODE);
+        GL12.glBegin(GL_MODE);
         int total = drawList.size();
         for (int i = 0; i < total; i++){
             DrawBuilderCommand command = drawList.remove(0);
             command.run(GL_MODE, i);
         }
-        GL11.glEnd();
+        GL12.glEnd();
     }
 
 

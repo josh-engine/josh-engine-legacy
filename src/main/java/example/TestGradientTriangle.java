@@ -8,7 +8,7 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL12.GL_TRIANGLES;
 
 public class TestGradientTriangle implements GameObject {
 
