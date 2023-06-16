@@ -1,6 +1,7 @@
 package co.josh.engine.render.drawbuilder.commands;
 
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL33;
 
 public class GlDisableCommand implements DrawBuilderCommand {
     public int id;
@@ -11,9 +12,9 @@ public class GlDisableCommand implements DrawBuilderCommand {
 
     public void run(int GL_MODE, int i, float t){
         try{
-            GL12.glDisable(id);
+            GL33.glDisable(id);
         } catch (Exception e) {
-            System.out.println("GL_ERROR DISABLE, ITER "+i+ " MODE "+ GL12.glGetString(GL_MODE) + " FLAG " + id);
+            System.out.println("GL_ERROR DISABLE, ITER "+i+ " MODE "+ GL33.glGetString(GL_MODE) + " FLAG " + id);
         }
     }
 }

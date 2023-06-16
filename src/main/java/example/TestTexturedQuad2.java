@@ -1,8 +1,8 @@
 package example;
 
 import co.josh.engine.Main;
-import co.josh.engine.components.Component;
-import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.Component;
+import co.josh.engine.GameObject;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.util.model.JoshModel;
 import co.josh.engine.util.model.ModelReader;

@@ -1,16 +1,16 @@
 package example;
 
-import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.GameObject;
 import co.josh.engine.render.drawbuilder.commands.*;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.Main;
-import co.josh.engine.components.Component;
+import co.josh.engine.Component;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL12.GL_QUADS;
+import static org.lwjgl.opengl.GL33.GL_QUADS;
 
 public class TestTexturedQuad implements GameObject {
 
@@ -63,32 +63,22 @@ public class TestTexturedQuad implements GameObject {
     }
 
     public void render() {
-        DrawBuilder db = new DrawBuilder(Main.camera, GL_QUADS);
-        db.push(new UnbindTexturesCommand());
-        db.push(new BindTextureCommand(this.textureId));
-        db.push(new GlBeginCommand());
-
-        db.push(db.next()
+        Main.renderSystem.mainShaderBuilder.push(Main.renderSystem.mainShaderBuilder.next()
                 .pos(getPosition().x - 50f, getPosition().y - 50f, getPosition().z)
                 .lastpos(getLastPosition().x - 50f, getLastPosition().y - 50f, getLastPosition().z)
                 .uv(0f, 0f));
-        db.push(db.next()
+        Main.renderSystem.mainShaderBuilder.push(Main.renderSystem.mainShaderBuilder.next()
                 .pos(getPosition().x + 50f, getPosition().y - 50f, getPosition().z)
                 .lastpos(getLastPosition().x + 50f, getLastPosition().y - 50f, getLastPosition().z)
                 .uv(1f, 0f));
-        db.push(db.next()
+        Main.renderSystem.mainShaderBuilder.push(Main.renderSystem.mainShaderBuilder.next()
                 .pos(getPosition().x + 50f, getPosition().y + 50f, getPosition().z)
                 .lastpos(getLastPosition().x + 50f, getLastPosition().y + 50f, getLastPosition().z)
                 .uv(1f, 1f));
-        db.push(db.next()
+        Main.renderSystem.mainShaderBuilder.push(Main.renderSystem.mainShaderBuilder.next()
                 .pos(getPosition().x - 50f, getPosition().y + 50f, getPosition().z)
                 .lastpos(getLastPosition().x - 50f, getLastPosition().y + 50f, getLastPosition().z)
                 .uv(0f, 1f));
-
-        db.push(new GlEndCommand());
-        db.push(new UnbindTexturesCommand());
-
-        db.render((float)Main.tpsCount / Main.tps);
     }
 
     @Override

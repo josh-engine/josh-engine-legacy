@@ -1,18 +1,13 @@
 package co.josh.engine.render;
 
-import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.GameObject;
 
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.opengl.GL12.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL12.GL_PROJECTION;
-import static org.lwjgl.opengl.GL12.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL12.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL12.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL12.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL12.GL_DEPTH_BUFFER_BIT;
 
 import co.josh.engine.Main;
-import org.lwjgl.opengl.GL12;
+import co.josh.engine.render.drawbuilder.ShaderBuilder;
+import co.josh.engine.render.drawbuilder.ShaderProgram;
+import org.lwjgl.opengl.GL33;
 
 public class RenderDispatcher {
      /*
@@ -29,42 +24,56 @@ public class RenderDispatcher {
          return x * _180_OVER_PI;
      }
      */
+    public ShaderProgram defaultShader;
+    public ShaderBuilder mainShaderBuilder;
+
+    public RenderDispatcher(){
+        mainShaderBuilder = new ShaderBuilder(Main.camera);
+        render(Main.window);
+        mainShaderBuilder.loadVAOsVBOs(Main.tpsCount/20f);
+        defaultShader = new ShaderProgram();
+        defaultShader.createVertexFromFile("/josh/shaders/vertex.glsl");
+        defaultShader.createFragmentFromFile("/josh/shaders/fragment.glsl");
+        defaultShader.link();
+    }
 
 
-     public boolean doPerspectiveDraw = true;
+    public boolean doPerspectiveDraw = true;
 
     public void render(long window){
         //clear framebuffer. on enclosed maps this may not be needed.
-        GL12.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GL33.glClear(GL33.GL_COLOR_BUFFER_BIT | GL33.GL_DEPTH_BUFFER_BIT);
 
-        GL12.glMatrixMode(GL_PROJECTION); //Setting up camera
-        GL12.glLoadIdentity();
+        /*
+        GL33.glMatrixMode(GL33.GL_PROJECTION); //Setting up camera
+        GL33.glLoadIdentity();
 
-        GL12.glEnable(GL_CULL_FACE); //On by default for performance
-        GL12.glEnable(GL_DEPTH_TEST);
+        GL33.glEnable(GL33.GL_CULL_FACE); //On by default for performance
+        GL33.glEnable(GL33.GL_DEPTH_TEST);
 
         if (doPerspectiveDraw){
             /*
             This line is stolen from the *third* page of google, after using a time machine to go back to whenever GL12 was useful.
             I don't know what anything here does, and probably couldn't figure it out if my life depended on it.
-            GL12 is entirely outdated and I promise I will update to GL30 soon and probably code a deferred renderer.
+            GL12 is entirely outdated and I promise I will update to GL33 soon and probably code a deferred renderer.
             Maybe.
 
             TLDR: DO NOT FUCK WITH GLFRUSTUM UNLESS YOU KNOW EXACTLY WHAT IT DOES AND HOW TO USE IT
-            */
-            GL12.glFrustum(-0.88f, 0.88f, -0.5f, 0.5f, 0.8f, 300.0f);
+
+            GL33.glFrustum(-0.88f, 0.88f, -0.5f, 0.5f, 0.8f, 300.0f);
         }else{
-            GL12.glOrtho(0, Main.currentWidth, 0, Main.currentHeight, 0, -1);
+            GL33.glOrtho(0, Main.currentWidth, 0, Main.currentHeight, 0, -1);
         }
 
 
-        GL12.glMatrixMode(GL_MODELVIEW); //Setting up render
-        GL12.glEnable(GL_TEXTURE_2D);
+        GL33.glMatrixMode(GL33.GL_MODELVIEW); //Setting up render
+        GL33.glEnable(GL33.GL_TEXTURE_2D);
 
+*/
         for (GameObject gameObject : Main.gameObjects){
             gameObject.render();
         }
-
+        mainShaderBuilder.render();
         glfwSwapBuffers(window); // update the screen with the newest frame (swapping the buffers)
     }
 }

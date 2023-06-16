@@ -1,6 +1,5 @@
 package co.josh.engine;
 
-import co.josh.engine.objects.o2d.GameObject;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.RenderDispatcher;
 import co.josh.engine.util.annotations.hooks.Startup;
@@ -16,12 +15,13 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.MemoryStack;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import co.josh.engine.components.Component;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -36,6 +36,7 @@ import java.util.Set;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -58,6 +59,8 @@ public class Main {
 
     public static String dir = System.getProperty("user.dir");
 
+    public static ArrayList<Integer> shaderPrograms = new ArrayList<>();
+
     public int fps;
     public int fpsCount;
     public static int tps = 20;
@@ -74,6 +77,14 @@ public class Main {
             return;
         }
         loop();
+
+        // Clean up shaders
+        GL33.glUseProgram(0); // unbind
+        for (int x : shaderPrograms){ // delete all
+            if (x != 0) {
+                GL33.glDeleteProgram(x);
+            }
+        }
 
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
@@ -122,7 +133,7 @@ public class Main {
             e.printStackTrace();
             System.out.println("Could not find engine directory or create it! Textures will not load!");
         }
-        // Setup an error callback. The default implementation
+        // Set up an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -131,10 +142,14 @@ public class Main {
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE); // the window will not stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
         glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE); //could not be me
-        glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
+        glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE); // attempt at fix
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE); // debug
 
         width = 854;
         height = 480;
@@ -174,15 +189,20 @@ public class Main {
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
+        GL.createCapabilities();
+        GLUtil.setupDebugMessageCallback();
+
         // Enable v-sync
         glfwSwapInterval(1);
 
-        renderSystem = new RenderDispatcher();
+        // Make the window visible
+        glfwShowWindow(window);
 
         camera = new Camera(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, 0f));
 
-        // Make the window visible
-        glfwShowWindow(window);
+        //System.out.println(glGetString(GL_EXTENSIONS));
+
+        renderSystem = new RenderDispatcher();
     }
 
     private void loop() {

@@ -1,6 +1,6 @@
-package co.josh.engine.objects.o2d;
+package co.josh.engine;
 
-import co.josh.engine.components.Component;
+import co.josh.engine.Component;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
