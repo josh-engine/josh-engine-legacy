@@ -99,22 +99,22 @@ public class Main {
 
     public static void runAllAnnotatedWith(Class<? extends Annotation> annotation)
             throws Exception {
-        run(getAllAnnotatedWith(annotation));
+        run(getAllAnnotatedWith(annotation), null);
     }
-    public static void run(Set<Method> methods) throws InvocationTargetException, IllegalAccessException {
+    public static void run(Set<Method> methods, Object[] parameters) throws InvocationTargetException, IllegalAccessException {
         for (Method m : methods) {
             // for simplicity, invokes methods as static without parameters
-            m.invoke(null);
+            m.invoke(m.getDeclaringClass(), parameters);
         }
     }
 
     private void init() throws WindowCreateFailure {
         System.out.println("Starting JoshEngine with LWJGL " + Version.getVersion());
         try {
-            if (Files.exists(Path.of(dir + "/wug"))){
+            if (Files.exists(Path.of(dir + "/josh/"))){
                 System.out.println("Engine dir exists and was found.");
             }else{
-                Files.createDirectory(Path.of(dir + "/wug"));
+                Files.createDirectory(Path.of(dir + "/josh/"));
                 System.out.println("Created engine dir succesfully.");
             }
 
@@ -134,6 +134,7 @@ public class Main {
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE); // the window will not stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
         glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE); //could not be me
+        glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
 
         width = 854;
         height = 480;
@@ -198,11 +199,18 @@ public class Main {
             public void invoke(long window, int _width, int _height) {
                 int width = _width/2;
                 int height = _height/2;
+
                 if ((float)width/height>(float)Main.width/Main.height){
                     GLFW.glfwSetWindowSize(window, width, (int)(width*((float)Main.height/Main.width)));
+                    currentWidth = width;
+                    currentHeight = (int)(width*((float)Main.height/Main.width));
                 } else if ((float)width/height<(float)Main.width/Main.height) {
                     GLFW.glfwSetWindowSize(window, (int)(height*((float)Main.width/Main.height)), height);
+                    currentWidth = (int)(height*((float)Main.width/Main.height));
+                    currentHeight = height;
+
                 }
+                System.out.println("New width/height: "+currentWidth+", "+currentHeight);
             }
         });
 
@@ -243,7 +251,7 @@ public class Main {
                     gameObject.getComponents().forEach(Component::tickValues);
                 }
                 try{
-                    run(gameloopRunnables);
+                    run(gameloopRunnables, null);
                 } catch (Exception e){
                     e.printStackTrace();
                     return;

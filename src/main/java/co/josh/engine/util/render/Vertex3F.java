@@ -1,4 +1,4 @@
-package co.josh.engine.render.drawbuilder.util;
+package co.josh.engine.util.render;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -17,7 +17,7 @@ public class Vertex3F {
         this.texcoords = new Vector2f(0f, 0f);
     }
 
-    Vertex3F(Vector3f pos, Vector3f lastpos, Vector4f col, Vector2f texcoords){
+    public Vertex3F(Vector3f pos, Vector3f lastpos, Vector4f col, Vector2f texcoords){
         this.position = pos;
         this.lastposition = lastpos;
         this.color = col;
@@ -42,5 +42,9 @@ public class Vertex3F {
 
     public String toString(){
         return position.toString();
+    }
+
+    public Vertex3F clone() {
+        return new Vertex3F(new Vector3f(position.x, position.y, position.z), new Vector3f(lastposition.x, lastposition.y, lastposition.z), new Vector4f(color.x, color.y, color.z, color.w), new Vector2f(texcoords.x, texcoords.y));
     }
 }

@@ -1,11 +1,8 @@
 package example;
 
 import co.josh.engine.objects.o2d.GameObject;
-import co.josh.engine.render.drawbuilder.commands.BindTextureCommand;
+import co.josh.engine.render.drawbuilder.commands.*;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
-import co.josh.engine.render.drawbuilder.commands.GlBeginCommand;
-import co.josh.engine.render.drawbuilder.commands.GlEndCommand;
-import co.josh.engine.render.drawbuilder.commands.UnbindTexturesCommand;
 import co.josh.engine.Main;
 import co.josh.engine.components.Component;
 import co.josh.engine.util.texture.TexturePreloader;
@@ -90,6 +87,7 @@ public class TestTexturedQuad implements GameObject {
 
         db.push(new GlEndCommand());
         db.push(new UnbindTexturesCommand());
+
         db.render((float)Main.tpsCount / Main.tps);
     }
 

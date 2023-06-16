@@ -3,7 +3,7 @@ package co.josh.engine.render.drawbuilder;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.drawbuilder.commands.DrawBuilderCommand;
 import co.josh.engine.render.drawbuilder.commands.VertexCommand;
-import co.josh.engine.render.drawbuilder.util.Vertex3F;
+import co.josh.engine.util.render.Vertex3F;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -44,6 +44,14 @@ public class DrawBuilder {
         int total = drawList.size();
         for (int i = 0; i < total; i++){
             DrawBuilderCommand command = drawList.remove(0);
+            command.run(GL_MODE, i, t);
+        }
+    }
+
+    public void render(List<DrawBuilderCommand> commands, float t){
+        int total = commands.size();
+        for (int i = 0; i < total; i++){
+            DrawBuilderCommand command = commands.remove(0);
             command.run(GL_MODE, i, t);
         }
     }

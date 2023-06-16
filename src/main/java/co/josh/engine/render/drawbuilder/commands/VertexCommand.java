@@ -1,7 +1,7 @@
 package co.josh.engine.render.drawbuilder.commands;
 
 import co.josh.engine.render.drawbuilder.DrawBuilder;
-import co.josh.engine.render.drawbuilder.util.Vertex3F;
+import co.josh.engine.util.render.Vertex3F;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 import co.josh.engine.Main;
