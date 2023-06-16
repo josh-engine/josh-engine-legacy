@@ -1,4 +1,5 @@
 ## JoshCo Game Engine
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2b68d54a278b4667849ef11578a6ff68)](https://app.codacy.com/gh/hotcocoaNcode/josh-engine/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 Hello, and welcome to a technological innovation of the century! 
 The latest JoshCo Game Engine is here and open source for all.
 
