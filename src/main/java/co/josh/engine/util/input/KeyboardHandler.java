@@ -2,6 +2,7 @@ package co.josh.engine.util.input;
 
 import co.josh.engine.Main;
 import co.josh.engine.util.annotations.hooks.OnKey;
+import co.josh.engine.util.exceptions.MethodInvocationFailure;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
@@ -28,7 +29,7 @@ public class KeyboardHandler {
                 try {
                     Main.run(onKeyRunnables, params);
                 } catch (InvocationTargetException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    throw new MethodInvocationFailure(onKeyRunnables);
                 }
             }
         };

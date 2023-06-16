@@ -1,6 +1,7 @@
 package co.josh.engine.util.input;
 
 import co.josh.engine.util.annotations.hooks.OnClick;
+import co.josh.engine.util.exceptions.MethodInvocationFailure;
 import org.lwjgl.BufferUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -37,7 +38,7 @@ public class MouseHandler {
                 try {
                     Main.run(onClickRunnables, params);
                 } catch (InvocationTargetException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    throw new MethodInvocationFailure(onClickRunnables);
                 }
             }
         };

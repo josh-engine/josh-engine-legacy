@@ -23,12 +23,12 @@ public class DrawBuilder {
         this.drawList = new LinkedList<>();
     }
 
-    public static Vector3f rotato_potato(Vector3f start, Camera camera){
+    public static Vector3f applyCameraRotationMatrix(Vector3f start, Camera camera){
         Matrix4f rotationMatrix = camera.rotationMatrix;
-        org.joml.Vector3f relativeVector = start.sub(camera.position);
-        org.joml.Vector3f rotatedRelativeVector = new org.joml.Vector3f();
+        Vector3f relativeVector = start.sub(camera.position);
+        Vector3f rotatedRelativeVector = new Vector3f();
         rotationMatrix.transformPosition(relativeVector, rotatedRelativeVector);
-        return new org.joml.Vector3f(rotatedRelativeVector).add(camera.position);
+        return new Vector3f(rotatedRelativeVector).add(camera.position);
     }
 
     public Vertex3F next(){

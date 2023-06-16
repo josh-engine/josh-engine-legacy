@@ -208,9 +208,7 @@ public class Main {
                     GLFW.glfwSetWindowSize(window, (int)(height*((float)Main.width/Main.height)), height);
                     currentWidth = (int)(height*((float)Main.width/Main.height));
                     currentHeight = height;
-
                 }
-                System.out.println("New width/height: "+currentWidth+", "+currentHeight);
             }
         });
 

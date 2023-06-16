@@ -15,7 +15,7 @@ public class VertexCommand implements DrawBuilderCommand {
     }
 
     public void run(int GL_MODE, int i, float t) {
-        Vector3f vertexPos = DrawBuilder.rotato_potato(vertex.lastposition.lerp(vertex.position, t), Main.camera);
+        Vector3f vertexPos = DrawBuilder.applyCameraRotationMatrix(vertex.lastposition.lerp(vertex.position, t), Main.camera);
         GL12.glTexCoord2f(vertex.texcoords.x, vertex.texcoords.y);
         GL12.glColor4f(vertex.color.x, vertex.color.y, vertex.color.z, vertex.color.w);
         GL12.glVertex3f(
