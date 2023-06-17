@@ -51,7 +51,10 @@ public class DivideCommand implements JShaderCommand {
     public ArrayList<Object> run() {
         ArrayList<Object> buf = new ArrayList<>();
         if (input.get(arguments.get(0)) instanceof Number && input.get(arguments.get(1)) instanceof Number){
-            input.set(arguments.get(0), (Float)input.get(arguments.get(0))/(Float)input.get(arguments.get(1)));
+            Float a = Float.parseFloat(String.valueOf(input.get(arguments.get(0))));
+            Float b = Float.parseFloat(String.valueOf(input.get(arguments.get(1))));
+
+            input.set(arguments.get(0), a/b);
         }
         return input;
     }

@@ -30,8 +30,7 @@ public class TestTexturedQuad implements GameObject {
     public TestTexturedQuad(float x, float y, float z){
         this.position = new Vector3f(x, y, z);
         this.lastPosition = new Vector3f(x, y, z);
-        //this.textureId = TextureLoader.loadTexture(Main.dir + "/josh/e.png");
-        this.textureId = TexturePreloader.textures.get("e");
+        this.textureId = TexturePreloader.textures.get("dirt");
         this.size = 1f;
         System.out.println("Quad1:"+textureId);
         db.addShader(Example.setwhite);
