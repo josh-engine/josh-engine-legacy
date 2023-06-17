@@ -1,0 +1,3 @@
+cleanStream               // only vertex3f
+recolor 1.0 1.0 1.0 1.0   // RGBA, setting to white
+out                       // output vertex3f

@@ -1,0 +1,6 @@
+dumpVertex // vertex info starts at position 3 in stream.
+rdivide 3 1 // dividing index 3 by index 1 into index 1, this is x position
+rdivide 4 2 // dividing index 4 by index 2 into index 2, this is y position
+modVertex 6 1 // position 6 in float[] version of vertex3f, which is red. setting to index 1's value (xpos/xsize)
+modVertex 7 2 // position 8 in float[] version of vertex3f, which is green. setting to index 2's value (ypos/ysize)
+out        // output vertex3f. IN SUMMARY, this sets vertex color to R = xpos/xsize, G = ypos/ysize, B = B, A = A

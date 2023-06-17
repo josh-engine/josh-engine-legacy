@@ -36,6 +36,17 @@ public class Vertex3F {
         return new Vertex3F(position, lastposition, new Vector4f(r, g, b, a), texcoords);
     }
 
+    public Float[] dump(){
+        return new Float[]{position.x, position.y, position.z, lastposition.x, lastposition.y, lastposition.z, color.x, color.y, color.z, color.w, texcoords.x, texcoords.y};
+    }
+
+    public static Vertex3F pack(Float[] values){
+        return new Vertex3F(new Vector3f(values[0], values[1], values[2]),
+                new Vector3f(values[3], values[4], values[5]),
+                new Vector4f(values[6], values[7], values[8], values[9]),
+                new Vector2f(values[10], values[11]));
+    }
+
     public Vertex3F uv(float x, float y){
         return new Vertex3F(position, lastposition, color, new Vector2f(x, y));
     }

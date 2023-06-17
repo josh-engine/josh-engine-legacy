@@ -3,7 +3,9 @@ package co.josh.engine;
 import co.josh.engine.objects.o2d.GameObject;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.RenderDispatcher;
+import co.josh.engine.render.joshshade.JoshShaderLoader;
 import co.josh.engine.util.annotations.hooks.Startup;
+import co.josh.engine.util.exceptions.JoshShaderFailure;
 import co.josh.engine.util.exceptions.WindowCreateFailure;
 import co.josh.engine.util.input.KeyboardHandler;
 import co.josh.engine.util.annotations.hooks.Exit;
@@ -131,6 +133,8 @@ public class Main {
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
+        glfwWindowHint(GLFW_VERSION_MAJOR, 1);
+        glfwWindowHint(GLFW_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE); // the window will not stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
         glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE); //could not be me
@@ -180,6 +184,8 @@ public class Main {
         renderSystem = new RenderDispatcher();
 
         camera = new Camera(new Vector3f(0f, 0f, 0f), new Vector3f(0f, 0f, 0f));
+
+        JoshShaderLoader.init();
 
         // Make the window visible
         glfwShowWindow(window);

@@ -1,6 +1,7 @@
 package example;
 
 import co.josh.engine.Main;
+import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.util.annotations.hooks.OnClick;
 import co.josh.engine.util.texture.TexturePreloader;
 
@@ -8,6 +9,10 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 public class Example {
+    public static JShader setwhite = new JShader("/josh/shaders/resetcolor.jcsl");
+
+    public static JShader colbypos = new JShader("/josh/shaders/colorbyposition.jcsl");
+
     @co.josh.engine.util.annotations.hooks.Startup
     public static void onStart(){
         System.out.println("Look at me! I'm a startup script!");

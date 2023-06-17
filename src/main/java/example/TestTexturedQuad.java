@@ -5,6 +5,7 @@ import co.josh.engine.render.drawbuilder.commands.*;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.Main;
 import co.josh.engine.components.Component;
+import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
 
@@ -21,6 +22,8 @@ public class TestTexturedQuad implements GameObject {
     Vector3f position;
     Vector3f lastPosition;
 
+    public DrawBuilder db = new DrawBuilder(Main.camera, GL_QUADS);
+
 
     public int textureId;
 
@@ -31,6 +34,10 @@ public class TestTexturedQuad implements GameObject {
         this.textureId = TexturePreloader.textures.get("e");
         this.size = 1f;
         System.out.println("Quad1:"+textureId);
+        db.addShader(Example.setwhite);
+        db.addShader(Example.colbypos);
+        db.shaderInputs.add(0, Main.width);
+        db.shaderInputs.add(1, Main.height);
     }
 
     @Override
@@ -63,7 +70,6 @@ public class TestTexturedQuad implements GameObject {
     }
 
     public void render() {
-        DrawBuilder db = new DrawBuilder(Main.camera, GL_QUADS);
         db.push(new UnbindTexturesCommand());
         db.push(new BindTextureCommand(this.textureId));
         db.push(new GlBeginCommand());

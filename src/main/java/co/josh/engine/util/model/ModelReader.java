@@ -24,8 +24,6 @@ public class ModelReader {
                 String[] split = raw.split(" ");
                 Float[] floats = Arrays.stream(split).map(Float::valueOf).toArray(Float[]::new);
                 // X Y Z R G B A S T
-                System.out.println(raw);
-                for (Float f : floats) System.out.println(f);
                 vertices.add(new Vertex3F(
                         new Vector3f(floats[0], floats[1], floats[2]),
                         new Vector4f(floats[3], floats[4], floats[5], floats[6]))
