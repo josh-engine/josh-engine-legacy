@@ -16,57 +16,56 @@ public class InsertCommand implements JShaderCommand {
     }
 
     public void setArgs(ArrayList<Object> args) {
-        int i = 0;
-        for (Object o : args){
-            if (!(o instanceof Integer)){
-                if (o instanceof String){
-                    if (((String) o).startsWith("//")){
-                        break;
-                    }
-                    try {
-                        o = Integer.parseInt((String) o);
-                        index = (Integer) o;
-                        break;
-                    } catch (Exception ignored) {
-
-                    }
-                }
-                System.out.println("(Insert) Warning: " + o + " is not a number!");
-            } else {
-                index = (Integer) o;
-            }
-            i++;
+        Integer[] ints = findIndex(args);
+        index = ints[0];
+        int skipindex = ints[1];
+        if (index == null) {
+            throw new JoshShaderFailure("Insert: No insert index found!");
         }
-        int index_of_arg1 = i;
-        i = 0;
-        for (Object o : args){
-            if (index_of_arg1 == i){
-                i++;
-                continue;
-            }
-            if (!(o instanceof Float)){
-                if (o instanceof String){
-                    if (((String) o).startsWith("//")){
-                        break;
-                    }
-                    try {
-                        o = Float.parseFloat((String) o);
-                        value = (Float) o;
-                        break;
-                    } catch (Exception ignored) {
-
-                    }
-                }
-                System.out.println("(Insert) Warning: " + o + " is not a number!");
-            } else {
-                value = (Float) o;
-            }
-            i++;
-        }
-        if (value == null || index == null){
-            throw new JoshShaderFailure("Insert: Wrong number of args!");
+        value = findValue(args, skipindex);
+        if (value == null) {
+            throw new JoshShaderFailure("Insert: No value to insert!");
         }
     }
+
+    private Integer[] findIndex(ArrayList<Object> args) {
+        Integer i = 0;
+        for (Object o : args) {
+            if (o instanceof Integer) {
+                return new Integer[]{(Integer) o, i};
+            } else if (o instanceof String && !((String) o).startsWith("//")) {
+                try {
+                    return new Integer[]{Integer.parseInt((String) o), i};
+                } catch (NumberFormatException ignored) {
+                    System.out.println("(Insert) Warning: " + o + " is not a number!");
+                }
+            }
+            i++;
+        }
+        return null;
+    }
+
+    private Float findValue(ArrayList<Object> args, int indexToSkip) {
+        for (int i = 0; i < args.size(); i++) {
+            if (i == indexToSkip) {
+                continue;
+            }
+
+            Object o = args.get(i);
+
+            if (o instanceof Float) {
+                return (Float) o;
+            } else if (o instanceof String && !((String) o).startsWith("//")) {
+                try {
+                    return Float.parseFloat((String) o);
+                } catch (NumberFormatException ignored) {
+                    System.out.println("(Insert) Warning: " + o + " is not a number!");
+                }
+            }
+        }
+        return null;
+    }
+
 
     public void setInput(ArrayList<Object> in) {
         this.input = in;
