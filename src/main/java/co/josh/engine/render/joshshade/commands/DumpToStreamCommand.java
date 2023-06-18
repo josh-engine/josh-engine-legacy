@@ -39,6 +39,9 @@ public class DumpToStreamCommand implements JShaderCommand {
                 input.add(v.color.w); //a
                 input.add(v.texcoords.x);
                 input.add(v.texcoords.y);
+                input.add(v.normal.x);
+                input.add(v.normal.y);
+                input.add(v.normal.z);
                 break;
             }
         }
