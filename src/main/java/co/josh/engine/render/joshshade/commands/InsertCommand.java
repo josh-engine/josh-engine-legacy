@@ -41,6 +41,7 @@ public class InsertCommand implements JShaderCommand {
         i = 0;
         for (Object o : args){
             if (index_of_arg1 == i){
+                i++;
                 continue;
             }
             if (!(o instanceof Float)){
