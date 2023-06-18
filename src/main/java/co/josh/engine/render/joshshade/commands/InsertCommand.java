@@ -20,7 +20,7 @@ public class InsertCommand implements JShaderCommand {
         for (Object o : args){
             if (!(o instanceof Integer)){
                 if (o instanceof String){
-                    if (((String) o).equals("//")){
+                    if (((String) o).startsWith("//")){
                         break;
                     }
                     try {
@@ -45,7 +45,7 @@ public class InsertCommand implements JShaderCommand {
             }
             if (!(o instanceof Float)){
                 if (o instanceof String){
-                    if (((String) o).equals("//")){
+                    if (((String) o).startsWith("//")){
                         break;
                     }
                     try {
@@ -76,8 +76,7 @@ public class InsertCommand implements JShaderCommand {
     }
 
     public ArrayList<Object> run() {
-        ArrayList<Object> buf = new ArrayList<>();
-        buf.add(index, value);
+        input.add(index, value);
         return input;
     }
 

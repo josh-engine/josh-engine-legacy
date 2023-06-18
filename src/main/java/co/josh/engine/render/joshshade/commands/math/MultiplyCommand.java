@@ -18,7 +18,7 @@ public class MultiplyCommand implements JShaderCommand {
         for (Object o : args){
             if (!(o instanceof Integer)){
                 if (o instanceof String){
-                    if (((String) o).equals("//")){
+                    if (((String) o).startsWith("//")){
                         break;
                     }
                     try {
@@ -49,7 +49,6 @@ public class MultiplyCommand implements JShaderCommand {
     }
 
     public ArrayList<Object> run() {
-        ArrayList<Object> buf = new ArrayList<>();
         if (input.get(arguments.get(0)) instanceof Number && input.get(arguments.get(1)) instanceof Number){
             Float a = Float.parseFloat(String.valueOf(input.get(arguments.get(0))));
             Float b = Float.parseFloat(String.valueOf(input.get(arguments.get(1))));

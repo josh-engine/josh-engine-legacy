@@ -19,7 +19,7 @@ public class RecolorCommand implements JShaderCommand {
         for (Object o : args){
             if (!(o instanceof Float)){
                 if (o instanceof String){
-                    if (((String) o).equals("//")){
+                    if (((String) o).startsWith("//")){
                         break;
                     }
                     try {

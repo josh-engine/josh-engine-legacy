@@ -24,7 +24,7 @@ public class ModVertexCommand implements JShaderCommand {
         for (Object o : args){
             if (!(o instanceof Integer)){
                 if (o instanceof String){
-                    if (((String) o).equals("//")){
+                    if (((String) o).startsWith("//")){
                         break;
                     }
                     try {
@@ -78,7 +78,7 @@ public class ModVertexCommand implements JShaderCommand {
             floats[index] = value;
             input.set(i, Vertex3F.pack(floats));
         } catch (Exception e) {
-            throw new JoshShaderFailure("ModifyVertex: " + e.toString());
+            throw new JoshShaderFailure("ModifyVertex: " + e);
         }
         return input;
     }
