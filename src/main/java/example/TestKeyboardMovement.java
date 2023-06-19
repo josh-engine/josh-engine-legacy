@@ -3,7 +3,7 @@ package example;
 import co.josh.engine.components.Component;
 import org.lwjgl.glfw.GLFW;
 import co.josh.engine.Main;
-import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.objects.GameObject;
 
 public class TestKeyboardMovement implements Component {
 

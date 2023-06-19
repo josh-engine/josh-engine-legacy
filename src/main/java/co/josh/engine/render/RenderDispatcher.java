@@ -1,6 +1,6 @@
 package co.josh.engine.render;
 
-import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.objects.GameObject;
 
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL12.GL_CULL_FACE;

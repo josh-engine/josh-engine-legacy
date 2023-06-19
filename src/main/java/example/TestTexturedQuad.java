@@ -1,11 +1,10 @@
 package example;
 
-import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.objects.GameObject;
 import co.josh.engine.render.drawbuilder.commands.*;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.Main;
 import co.josh.engine.components.Component;
-import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
 

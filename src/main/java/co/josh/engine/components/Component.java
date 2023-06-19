@@ -1,6 +1,6 @@
 package co.josh.engine.components;
 
-import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.objects.GameObject;
 
 public interface Component {
 

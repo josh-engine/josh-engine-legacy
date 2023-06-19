@@ -1,11 +1,10 @@
 package co.josh.engine;
 
-import co.josh.engine.objects.o2d.GameObject;
+import co.josh.engine.objects.GameObject;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.RenderDispatcher;
 import co.josh.engine.render.joshshade.JoshShaderLoader;
 import co.josh.engine.util.annotations.hooks.Startup;
-import co.josh.engine.util.exceptions.JoshShaderFailure;
 import co.josh.engine.util.exceptions.WindowCreateFailure;
 import co.josh.engine.util.input.KeyboardHandler;
 import co.josh.engine.util.annotations.hooks.Exit;

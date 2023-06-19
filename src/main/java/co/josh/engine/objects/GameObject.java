@@ -1,4 +1,4 @@
-package co.josh.engine.objects.o2d;
+package co.josh.engine.objects;
 
 import co.josh.engine.components.Component;
 import org.joml.Vector3f;
