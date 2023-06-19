@@ -1,11 +1,11 @@
-package co.josh.engine.render.joshshade.commands.math;
+package co.josh.engine.render.joshshade.commands.math.index;
 
 import co.josh.engine.render.joshshade.commands.JShaderCommand;
 import co.josh.engine.util.exceptions.JoshShaderFailure;
 
 import java.util.ArrayList;
 
-public class DivideCommand implements JShaderCommand {
+public class DivideReverseCommand implements JShaderCommand {
     ArrayList<Object> input;
     ArrayList<Integer> arguments;
 
@@ -45,7 +45,7 @@ public class DivideCommand implements JShaderCommand {
     }
 
     public JShaderCommand clone() {
-        return new DivideCommand();
+        return new DivideReverseCommand();
     }
 
     public ArrayList<Object> run() {
@@ -53,12 +53,12 @@ public class DivideCommand implements JShaderCommand {
             Float a = Float.parseFloat(String.valueOf(input.get(arguments.get(0))));
             Float b = Float.parseFloat(String.valueOf(input.get(arguments.get(1))));
 
-            input.set(arguments.get(0), a/b);
+            input.set(arguments.get(1), a/b);
         }
         return input;
     }
 
     public String functionName() {
-        return "divide";
+        return "rdivide";
     }
 }

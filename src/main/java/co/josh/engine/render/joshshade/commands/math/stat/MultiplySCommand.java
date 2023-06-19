@@ -1,10 +1,12 @@
-package co.josh.engine.render.joshshade.commands;
+package co.josh.engine.render.joshshade.commands.math.stat;
 
+import co.josh.engine.render.joshshade.commands.JShaderCommand;
 import co.josh.engine.util.exceptions.JoshShaderFailure;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class InsertCommand implements JShaderCommand {
+public class MultiplySCommand implements JShaderCommand {
     ArrayList<Object> input;
 
     Integer index;
@@ -17,14 +19,14 @@ public class InsertCommand implements JShaderCommand {
 
     public void setArgs(ArrayList<Object> args) {
         Integer[] ints = findIndex(args);
-        index = ints[0];
+        index = Objects.requireNonNull(ints)[0];
         int skipindex = ints[1];
         if (index == null) {
-            throw new JoshShaderFailure("Insert: No insert index found!");
+            throw new JoshShaderFailure("MultiplyStatic: No insert index found!");
         }
         value = findValue(args, skipindex);
         if (value == null) {
-            throw new JoshShaderFailure("Insert: No value to insert!");
+            throw new JoshShaderFailure("MultiplyStatic: No value to insert!");
         }
     }
 
@@ -37,7 +39,7 @@ public class InsertCommand implements JShaderCommand {
                 try {
                     return new Integer[]{Integer.parseInt((String) o), i};
                 } catch (NumberFormatException ignored) {
-                    System.out.println("(Insert) Warning: " + o + " is not a number!");
+                    System.out.println("(MultiplyStatic) Warning: " + o + " is not a number!");
                 }
             }
             i++;
@@ -59,28 +61,31 @@ public class InsertCommand implements JShaderCommand {
                 try {
                     return Float.parseFloat((String) o);
                 } catch (NumberFormatException ignored) {
-                    System.out.println("(Insert) Warning: " + o + " is not a number!");
+                    System.out.println("(MultiplyStatic) Warning: " + o + " is not a number!");
                 }
             }
         }
         return null;
     }
 
-
     public void setInput(ArrayList<Object> in) {
         this.input = in;
     }
 
     public JShaderCommand clone() {
-        return new InsertCommand();
+        return new MultiplySCommand();
     }
 
     public ArrayList<Object> run() {
-        input.add(index, value);
+        if (input.get(index) instanceof Number){
+            Float a = Float.parseFloat(String.valueOf(input.get(index)));
+
+            input.set(index, a*value);
+        }
         return input;
     }
 
     public String functionName() {
-        return "insert";
+        return "staticmultiply";
     }
 }

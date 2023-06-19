@@ -7,6 +7,7 @@ import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Objects;
 
 public class TextureLoader {
     //Thanks ChatGPT
@@ -48,7 +49,7 @@ public class TextureLoader {
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, tWidth, tHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
 
         // Free image data
-        STBImage.stbi_image_free(buf);
+        STBImage.stbi_image_free(Objects.requireNonNull(buf));
 
         return textureID;
     }

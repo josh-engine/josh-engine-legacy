@@ -1,11 +1,11 @@
-package co.josh.engine.render.joshshade.commands.math;
+package co.josh.engine.render.joshshade.commands.math.index;
 
 import co.josh.engine.render.joshshade.commands.JShaderCommand;
 import co.josh.engine.util.exceptions.JoshShaderFailure;
 
 import java.util.ArrayList;
 
-public class SubtractReverseCommand implements JShaderCommand {
+public class MultiplyCommand implements JShaderCommand {
     ArrayList<Object> input;
     ArrayList<Integer> arguments;
 
@@ -29,14 +29,14 @@ public class SubtractReverseCommand implements JShaderCommand {
 
                     }
                 }
-                System.out.println("(Subtract) Warning: " + o + " is not a number!");
+                System.out.println("(Multiply) Warning: " + o + " is not a number!");
             } else {
                 _args.add((Integer) o);
             }
         }
         arguments = _args;
         if (arguments.size() != 2){
-            throw new JoshShaderFailure("Subtract: Wrong number of args!");
+            throw new JoshShaderFailure("Multiply: Wrong number of args!");
         }
     }
 
@@ -45,7 +45,7 @@ public class SubtractReverseCommand implements JShaderCommand {
     }
 
     public JShaderCommand clone() {
-        return new SubtractReverseCommand();
+        return new MultiplyCommand();
     }
 
     public ArrayList<Object> run() {
@@ -53,12 +53,12 @@ public class SubtractReverseCommand implements JShaderCommand {
             Float a = Float.parseFloat(String.valueOf(input.get(arguments.get(0))));
             Float b = Float.parseFloat(String.valueOf(input.get(arguments.get(1))));
 
-            input.set(arguments.get(1), a-b);
+            input.set(arguments.get(0), a*b);
         }
         return input;
     }
 
     public String functionName() {
-        return "rsubtract";
+        return "multiply";
     }
 }

@@ -1,10 +1,7 @@
 package co.josh.engine.render.drawbuilder.commands;
 
-import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.render.joshshade.ShadersObject;
 import org.lwjgl.opengl.GL12;
-
-import java.util.ArrayList;
 
 public class UnbindTexturesCommand implements DrawBuilderCommand {
 

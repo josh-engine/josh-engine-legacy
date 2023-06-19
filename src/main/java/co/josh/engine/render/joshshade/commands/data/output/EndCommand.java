@@ -1,5 +1,6 @@
-package co.josh.engine.render.joshshade.commands;
+package co.josh.engine.render.joshshade.commands.data.output;
 
+import co.josh.engine.render.joshshade.commands.JShaderCommand;
 import co.josh.engine.util.exceptions.JoshShaderFailure;
 import co.josh.engine.util.render.Vertex3F;
 

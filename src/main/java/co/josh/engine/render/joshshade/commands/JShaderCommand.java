@@ -1,7 +1,5 @@
 package co.josh.engine.render.joshshade.commands;
 
-import co.josh.engine.util.render.Vertex3F;
-
 import java.util.ArrayList;
 
 public interface JShaderCommand {

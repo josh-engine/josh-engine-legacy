@@ -1,7 +1,7 @@
 package co.josh.engine.render.joshshade;
 
 import co.josh.engine.Main;
-import co.josh.engine.render.joshshade.commands.EndCommand;
+import co.josh.engine.render.joshshade.commands.data.output.EndCommand;
 import co.josh.engine.render.joshshade.commands.JShaderCommand;
 import co.josh.engine.util.render.Vertex3F;
 

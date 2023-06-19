@@ -1,0 +1,14 @@
+cleanStream // only vertex
+insert 1 1.0 // insert 1.0f into stream at index 1
+insert 2 2.0 // insert 2.0f into stream at index 2
+dumpVertex // vertex info starts at index 3 in stream
+add 15 1 // add 1 to all to cancel out -1s
+add 16 1
+add 17 1
+divide 15 2 // divide by 2 to turn back to color
+divide 16 2
+divide 17 2
+modVertex 6 15 // position 6 in float[] version of vertex3f, which is red. setting to x normal
+modVertex 7 16 // position 8 in float[] version of vertex3f, which is green. setting to y normal
+modVertex 8 17 // position 8 in float[] version of vertex3f, which is green. setting to z normal
+out        // output vertex3f. IN SUMMARY, this sets vertex color to R = nx, G = ny, B = nz, A = A

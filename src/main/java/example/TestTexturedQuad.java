@@ -34,8 +34,6 @@ public class TestTexturedQuad implements GameObject {
         System.out.println("Quad1:"+textureId);
         db.addShader(Example.setwhite);
         db.addShader(Example.colbypos);
-        db.shaderInputs.add(0, Main.width);
-        db.shaderInputs.add(1, Main.height);
     }
 
     @Override

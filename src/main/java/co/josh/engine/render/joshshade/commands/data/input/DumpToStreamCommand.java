@@ -1,5 +1,6 @@
-package co.josh.engine.render.joshshade.commands;
+package co.josh.engine.render.joshshade.commands.data.input;
 
+import co.josh.engine.render.joshshade.commands.JShaderCommand;
 import co.josh.engine.util.render.Vertex3F;
 
 import java.util.ArrayList;

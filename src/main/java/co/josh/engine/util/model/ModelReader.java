@@ -11,8 +11,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLE_FAN;
-
 public class ModelReader {
 
     public static JoshModel loadJoshFormat(String filename){
@@ -20,7 +18,7 @@ public class ModelReader {
         try {
             File file = new File(filename);
             Scanner scanner = new Scanner(file);
-            int GL_MODE = GL_TRIANGLE_FAN;
+            int GL_MODE;
             String version = "version 10";
             try{
                 GL_MODE = Integer.parseInt(scanner.nextLine()); //COMPAT FOR 1.0
@@ -31,7 +29,7 @@ public class ModelReader {
                 GL_MODE = Integer.parseInt(scanner.nextLine());
             }
             String textureName = scanner.nextLine();
-            if (version == "version 10"){
+            if (Objects.equals(version, "version 10")){
                 while (scanner.hasNextLine()) {
                     String raw = scanner.nextLine();
                     String[] split = raw.split(" ");

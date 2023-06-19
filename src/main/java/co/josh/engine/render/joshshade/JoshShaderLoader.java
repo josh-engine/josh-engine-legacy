@@ -1,7 +1,15 @@
 package co.josh.engine.render.joshshade;
 
 import co.josh.engine.render.joshshade.commands.*;
-import co.josh.engine.render.joshshade.commands.math.*;
+import co.josh.engine.render.joshshade.commands.data.input.CleanStreamCommand;
+import co.josh.engine.render.joshshade.commands.data.input.DumpToStreamCommand;
+import co.josh.engine.render.joshshade.commands.data.input.DumpWindowCommand;
+import co.josh.engine.render.joshshade.commands.data.input.InsertCommand;
+import co.josh.engine.render.joshshade.commands.data.modify.ModVertexCommand;
+import co.josh.engine.render.joshshade.commands.data.modify.RecolorCommand;
+import co.josh.engine.render.joshshade.commands.data.output.EndCommand;
+import co.josh.engine.render.joshshade.commands.math.index.*;
+import co.josh.engine.render.joshshade.commands.math.stat.*;
 import co.josh.engine.util.exceptions.JoshShaderFailure;
 
 import java.io.IOException;
@@ -12,9 +20,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class JoshShaderLoader {
-    public static ArrayList<JShaderCommand> registeredCommands = new ArrayList<>();
+    static ArrayList<JShaderCommand> registeredCommands = new ArrayList<>();
 
     public static void init(){
+        //1.0
         registeredCommands.add(new CleanStreamCommand());
         registeredCommands.add(new RecolorCommand());
         registeredCommands.add(new EndCommand());
@@ -28,6 +37,15 @@ public class JoshShaderLoader {
         registeredCommands.add(new DivideReverseCommand());
         registeredCommands.add(new ModVertexCommand());
 
+        //1.1
+        registeredCommands.add(new AddSCommand());
+        registeredCommands.add(new MultiplySCommand());
+        registeredCommands.add(new SubtractSCommand());
+        registeredCommands.add(new SubtractRSCommand());
+        registeredCommands.add(new DivideSCommand());
+        registeredCommands.add(new DivideRSCommand());
+        registeredCommands.add(new DumpWindowCommand());
+
     }
 
     public static void registerCommand(JShaderCommand command){
@@ -36,8 +54,7 @@ public class JoshShaderLoader {
 
     public static String loadFile(String name){
         try{
-        String text = Files.readString(Paths.get(name));
-        return text;
+            return Files.readString(Paths.get(name));
         } catch (IOException e) {
             throw new JoshShaderFailure("Could not find " + name);
         }
@@ -47,12 +64,11 @@ public class JoshShaderLoader {
         String[] lines = data.split("\\r?\\n");
         ArrayList<JShaderCommand> buf = new ArrayList<>();
         for (String line : lines){
-            ArrayList<Object> split = new ArrayList<>();
-            split.addAll(Arrays.asList(line.split(" ")));
+            ArrayList<Object> split = new ArrayList<>(Arrays.asList(line.split(" ")));
             for (JShaderCommand rc : registeredCommands){
                 if (Objects.equals(rc.functionName(), split.get(0))){
-                    JShaderCommand newCommand = rc.clone();
                     split.remove(0);
+                    JShaderCommand newCommand = rc.clone();
                     newCommand.setArgs(split);
                     buf.add(newCommand);
                 }

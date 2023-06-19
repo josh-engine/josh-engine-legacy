@@ -8,8 +8,6 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 import co.josh.engine.Main;
 
-import java.util.ArrayList;
-
 public class VertexCommand implements DrawBuilderCommand {
 
     public Vertex3F vertex;
