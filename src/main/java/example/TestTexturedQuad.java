@@ -1,10 +1,11 @@
 package example;
 
-import co.josh.engine.objects.GameObject;
+import co.josh.engine.objects.o2d.GameObject;
 import co.josh.engine.render.drawbuilder.commands.*;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.Main;
 import co.josh.engine.components.Component;
+import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
 
@@ -31,9 +32,8 @@ public class TestTexturedQuad implements GameObject {
         this.lastPosition = new Vector3f(x, y, z);
         this.textureId = TexturePreloader.textures.get("dirt");
         this.size = 1f;
-        System.out.println("Quad1:"+textureId);
         db.addShader(Example.setwhite);
-        db.addShader(Example.colbypos);
+        db.addShader(Example.colbynorm);
     }
 
     @Override
@@ -70,22 +70,133 @@ public class TestTexturedQuad implements GameObject {
         db.push(new BindTextureCommand(this.textureId));
         db.push(new GlBeginCommand());
 
+        //Z+ face
         db.push(db.next()
-                .pos(getPosition().x - 50f, getPosition().y - 50f, getPosition().z)
-                .lastpos(getLastPosition().x - 50f, getLastPosition().y - 50f, getLastPosition().z)
+                .pos(getPosition().x - 1f, getPosition().y - 1f, getPosition().z + 1)
+                .lastpos(getLastPosition().x - 1f, getLastPosition().y - 1f, getLastPosition().z + 1)
                 .uv(0f, 0f));
         db.push(db.next()
-                .pos(getPosition().x + 50f, getPosition().y - 50f, getPosition().z)
-                .lastpos(getLastPosition().x + 50f, getLastPosition().y - 50f, getLastPosition().z)
+                .pos(getPosition().x + 1f, getPosition().y - 1f, getPosition().z + 1)
+                .lastpos(getLastPosition().x + 1f, getLastPosition().y - 1f, getLastPosition().z + 1)
                 .uv(1f, 0f));
         db.push(db.next()
-                .pos(getPosition().x + 50f, getPosition().y + 50f, getPosition().z)
-                .lastpos(getLastPosition().x + 50f, getLastPosition().y + 50f, getLastPosition().z)
+                .pos(getPosition().x + 1f, getPosition().y + 1f, getPosition().z + 1)
+                .lastpos(getLastPosition().x + 1f, getLastPosition().y + 1f, getLastPosition().z + 1)
                 .uv(1f, 1f));
         db.push(db.next()
-                .pos(getPosition().x - 50f, getPosition().y + 50f, getPosition().z)
-                .lastpos(getLastPosition().x - 50f, getLastPosition().y + 50f, getLastPosition().z)
+                .pos(getPosition().x - 1f, getPosition().y + 1f, getPosition().z + 1)
+                .lastpos(getLastPosition().x - 1f, getLastPosition().y + 1f, getLastPosition().z + 1)
                 .uv(0f, 1f));
+
+        //X- Face
+        db.push(db.next()
+                .pos(getPosition().x - 1, getPosition().y - 1f, getPosition().z - 1f)
+                .lastpos(getLastPosition().x - 1, getLastPosition().y - 1f, getLastPosition().z - 1f)
+                .uv(0f, 0f)
+                .normal(-1f, 0f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x - 1, getPosition().y - 1f, getPosition().z + 1f)
+                .lastpos(getLastPosition().x - 1, getLastPosition().y - 1f, getLastPosition().z + 1f)
+                .uv(1f, 0f)
+                .normal(-1f, 0f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x - 1, getPosition().y + 1f, getPosition().z + 1f)
+                .lastpos(getLastPosition().x - 1, getLastPosition().y + 1f, getLastPosition().z + 1f)
+                .uv(1f, 1f)
+                .normal(-1f, 0f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x - 1, getPosition().y + 1f, getPosition().z - 1f)
+                .lastpos(getLastPosition().x - 1, getLastPosition().y + 1f, getLastPosition().z - 1f)
+                .uv(0f, 1f)
+                .normal(-1f, 0f, 0f));
+
+        //Y+ Face
+        db.push(db.next()
+                .pos(getPosition().x - 1f, getPosition().y + 1f, getPosition().z - 1f)
+                .lastpos(getLastPosition().x - 1, getLastPosition().y + 1f, getLastPosition().z - 1f)
+                .uv(0f, 0f)
+                .normal(0f, 1f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x - 1f, getPosition().y + 1f, getPosition().z + 1f)
+                .lastpos(getLastPosition().x - 1, getLastPosition().y + 1f, getLastPosition().z + 1f)
+                .uv(1f, 0f)
+                .normal(0f, 1f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x + 1f, getPosition().y + 1f, getPosition().z + 1f)
+                .lastpos(getLastPosition().x + 1, getLastPosition().y + 1f, getLastPosition().z + 1f)
+                .uv(1f, 1f)
+                .normal(0f, 1f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x + 1f, getPosition().y + 1f, getPosition().z - 1f)
+                .lastpos(getLastPosition().x + 1, getLastPosition().y + 1f, getLastPosition().z - 1f)
+                .uv(0f, 1f)
+                .normal(0f, 1f, 0f));
+
+        //X+ Face
+        db.push(db.next()
+                .pos(getPosition().x + 1, getPosition().y + 1f, getPosition().z - 1f)
+                .lastpos(getLastPosition().x + 1, getLastPosition().y + 1f, getLastPosition().z - 1f)
+                .uv(0f, 1f)
+                .normal(1f, 0f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x + 1, getPosition().y + 1f, getPosition().z + 1f)
+                .lastpos(getLastPosition().x + 1, getLastPosition().y + 1f, getLastPosition().z + 1f)
+                .uv(1f, 1f)
+                .normal(1f, 0f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x + 1, getPosition().y - 1f, getPosition().z + 1f)
+                .lastpos(getLastPosition().x + 1, getLastPosition().y - 1f, getLastPosition().z + 1f)
+                .uv(1f, 0f)
+                .normal(1f, 0f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x + 1, getPosition().y - 1f, getPosition().z - 1f)
+                .lastpos(getLastPosition().x + 1, getLastPosition().y - 1f, getLastPosition().z - 1f)
+                .uv(0f, 0f)
+                .normal(1f, 0f, 0f));
+
+        //Y- Face
+        db.push(db.next()
+                .pos(getPosition().x + 1f, getPosition().y - 1f, getPosition().z - 1f)
+                .lastpos(getLastPosition().x + 1, getLastPosition().y - 1f, getLastPosition().z - 1f)
+                .uv(0f, 1f)
+                .normal(0f, -1f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x + 1f, getPosition().y - 1f, getPosition().z + 1f)
+                .lastpos(getLastPosition().x + 1, getLastPosition().y - 1f, getLastPosition().z + 1f)
+                .uv(1f, 1f)
+                .normal(0f, -1f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x - 1f, getPosition().y - 1f, getPosition().z + 1f)
+                .lastpos(getLastPosition().x - 1, getLastPosition().y - 1f, getLastPosition().z + 1f)
+                .uv(1f, 0f)
+                .normal(0f, -1f, 0f));
+        db.push(db.next()
+                .pos(getPosition().x - 1f, getPosition().y - 1f, getPosition().z - 1f)
+                .lastpos(getLastPosition().x - 1, getLastPosition().y - 1f, getLastPosition().z - 1f)
+                .uv(0f, 0f)
+                .normal(0f, -1f, 0f));
+
+        //Z- face
+        db.push(db.next()
+                .pos(getPosition().x - 1f, getPosition().y + 1f, getPosition().z - 1)
+                .lastpos(getLastPosition().x - 1f, getLastPosition().y + 1f, getLastPosition().z - 1)
+                .uv(0f, 1f)
+                .normal(0f, 0f, -1f));
+        db.push(db.next()
+                .pos(getPosition().x + 1f, getPosition().y + 1f, getPosition().z - 1)
+                .lastpos(getLastPosition().x + 1f, getLastPosition().y + 1f, getLastPosition().z - 1)
+                .uv(1f, 1f)
+                .normal(0f, 0f, -1f));
+        db.push(db.next()
+                .pos(getPosition().x + 1f, getPosition().y - 1f, getPosition().z - 1)
+                .lastpos(getLastPosition().x + 1f, getLastPosition().y - 1f, getLastPosition().z - 1)
+                .uv(1f, 0f)
+                .normal(0f, 0f, -1f));
+        db.push(db.next()
+                .pos(getPosition().x - 1f, getPosition().y - 1f, getPosition().z - 1)
+                .lastpos(getLastPosition().x - 1f, getLastPosition().y - 1f, getLastPosition().z - 1)
+                .uv(0f, 0f)
+                .normal(0f, 0f, -1f));
 
         db.push(new GlEndCommand());
         db.push(new UnbindTexturesCommand());
