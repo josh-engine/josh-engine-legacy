@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -45,6 +46,14 @@ public class Main {
 
     public static int width;
     public static int height;
+
+    public static float targetFps = 60f;
+
+    public static float frameWait = (int)((1f/targetFps)*1000000000);
+
+    public static void recalcFrameWait(){
+        frameWait = (int)((1f/targetFps)*1000000000);
+    }
 
     public static Camera camera;
 
@@ -264,7 +273,7 @@ public class Main {
                 tickLastUpdateTime = now;
             }
 
-            if (frameElapsedTime  >= 16666666){ //60 fps, this is (1/60)*10^9 because nanoseconds
+            if (frameElapsedTime  >= frameWait){
                 renderSystem.render(window);
                 fpsCount++; //Rendered a frame so yeah
                 frameLastUpdateTime = now;

@@ -3,26 +3,30 @@ package example;
 import co.josh.engine.Main;
 import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.util.annotations.hooks.Gameloop;
-import co.josh.engine.util.annotations.hooks.OnClick;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
-
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import org.lwjgl.opengl.GL12;
 
 public class Example {
     public static JShader setwhite = new JShader("/josh/shaders/resetcolor.jcsl");
 
     public static JShader colbynorm = new JShader("/josh/shaders/colorbynormal.jcsl");
 
+    public static float[] ambient = {0.25f, 0.25f, 0.25f, 1f};
+
     @co.josh.engine.util.annotations.hooks.Startup
     public static void onStart(){
         System.out.println("Look at me! I'm a startup script!");
         Main.renderSystem.doPerspectiveDraw = true;
         TexturePreloader.load("/josh/img/");
+        GL12.glLightModelfv(GL12.GL_LIGHT_MODEL_AMBIENT, ambient);
+        float[] diffuse = { 0.4f, 0.4f, 0.6f, 1f };
+        float[] specular = { 0f, 0f, 0.8f, 1f };
+        GL12.glLightfv(GL12.GL_LIGHT0, GL12.GL_DIFFUSE, diffuse);
+        GL12.glLightfv(GL12.GL_LIGHT0, GL12.GL_SPECULAR, specular);
 
-        Main.gameObjects.add(new TestTexturedQuad(0, 0, -5));
+        Main.gameObjects.add(new TextTexturedCube(0, 0, -5));
     }
 
     public static Float movespeed = 0.25f;

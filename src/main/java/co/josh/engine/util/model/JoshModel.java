@@ -4,6 +4,7 @@ import co.josh.engine.render.drawbuilder.commands.*;
 import co.josh.engine.util.render.Vertex3F;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 
@@ -17,16 +18,32 @@ public class JoshModel {
 
     public int GL_MODE;
 
+    public boolean lit;
+
     public JoshModel(String textureName, int GL_MODE, ArrayList<Vertex3F> vertices){
         this.vertices = vertices;
         this.textureName = textureName;
         this.textureId = TexturePreloader.textures.get(textureName);
         this.GL_MODE = GL_MODE;
+        this.lit = false;
+    }
+
+    public JoshModel(String textureName, int GL_MODE, ArrayList<Vertex3F> vertices, boolean lit){
+        this.vertices = vertices;
+        this.textureName = textureName;
+        this.textureId = TexturePreloader.textures.get(textureName);
+        this.GL_MODE = GL_MODE;
+        this.lit = lit;
     }
 
     public ArrayList<DrawBuilderCommand> drawBuilderCommands(Vector3f position, Vector3f lastposition){
         ArrayList<DrawBuilderCommand> commands = new ArrayList<>();
         commands.add(new UnbindTexturesCommand());
+        if (lit){
+            commands.add(new GlEnableCommand(GL12.GL_LIGHTING));
+            commands.add(new GlEnableCommand(GL12.GL_LIGHT0));
+            commands.add(new GlEnableCommand(GL12.GL_COLOR_MATERIAL));
+        }
         commands.add(new BindTextureCommand(textureId));
         commands.add(new GlBeginCommand());
         for (Vertex3F vertex : vertices){
@@ -37,6 +54,11 @@ public class JoshModel {
         }
         commands.add(new GlEndCommand());
         commands.add(new UnbindTexturesCommand());
+        if (lit){
+            commands.add(new GlDisableCommand(GL12.GL_LIGHTING));
+            commands.add(new GlDisableCommand(GL12.GL_LIGHT0));
+            commands.add(new GlDisableCommand(GL12.GL_COLOR_MATERIAL));
+        }
         return commands;
     }
 }

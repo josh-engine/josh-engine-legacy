@@ -56,6 +56,21 @@ public class ModelReader {
                 }
                 scanner.close();
                 return new JoshModel(textureName, GL_MODE, vertices);
+            } else if (version.startsWith("version 12")) {
+                boolean lit = Objects.equals(scanner.nextLine(), "1");
+                while (scanner.hasNextLine()) {
+                    String raw = scanner.nextLine();
+                    String[] split = raw.split(" ");
+                    Float[] floats = Arrays.stream(split).map(Float::valueOf).toArray(Float[]::new);
+                    // X Y Z R G B A S T NX NY NZ
+                    vertices.add(new Vertex3F(
+                            new Vector3f(floats[0], floats[1], floats[2]),
+                            new Vector4f(floats[3], floats[4], floats[5], floats[6]))
+                            .uv(floats[7], floats[8])
+                            .normal(floats[9], floats[10], floats[11]));
+                }
+                scanner.close();
+                return new JoshModel(textureName, GL_MODE, vertices, lit);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
