@@ -20,21 +20,18 @@ public class JoshModel {
 
     public boolean lit;
 
-    public JoshModel(String textureName, int GL_MODE, ArrayList<Vertex3F> vertices){
-        this.vertices = vertices;
-        this.textureName = textureName;
-        this.textureId = TexturePreloader.textures.get(textureName);
-        this.GL_MODE = GL_MODE;
-        this.lit = false;
-    }
+    public boolean tex;
 
-    public JoshModel(String textureName, int GL_MODE, ArrayList<Vertex3F> vertices, boolean lit){
+    public JoshModel(String textureName, int GL_MODE, ArrayList<Vertex3F> vertices, boolean lit, boolean textured){
         this.vertices = vertices;
         this.textureName = textureName;
-        this.textureId = TexturePreloader.textures.get(textureName);
+        if (textured) this.textureId = TexturePreloader.textures.get(textureName);
         this.GL_MODE = GL_MODE;
         this.lit = lit;
+        this.tex = textured;
     }
+
+    public float scale = 1f;
 
     public ArrayList<DrawBuilderCommand> drawBuilderCommands(Vector3f position, Vector3f lastposition){
         ArrayList<DrawBuilderCommand> commands = new ArrayList<>();
@@ -44,10 +41,12 @@ public class JoshModel {
             commands.add(new GlEnableCommand(GL12.GL_LIGHT0));
             commands.add(new GlEnableCommand(GL12.GL_COLOR_MATERIAL));
         }
-        commands.add(new BindTextureCommand(textureId));
+        if (tex) commands.add(new BindTextureCommand(textureId));
         commands.add(new GlBeginCommand());
         for (Vertex3F vertex : vertices){
             Vertex3F vert = vertex.clone();
+            vert.position.mul(scale);
+            vert.lastposition.mul(scale);
             vert.position.add(position);
             vert.lastposition.add(lastposition);
             commands.add(new VertexCommand(vert));

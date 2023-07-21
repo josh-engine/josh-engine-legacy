@@ -20,14 +20,11 @@ public class VertexCommand implements DrawBuilderCommand {
         for (JShader shader : shaders.shaders){
             vertex = shader.shade(vertex.clone(), shaders.shaderData);
         }
-        Vector3f vertexPos = DrawBuilder.applyCameraRotationMatrix(vertex.lastposition.lerp(vertex.position, t), Main.camera);
+        Vector3f vertexPos = vertex.lastposition.lerp(vertex.position, t);
         GL12.glTexCoord2f(vertex.texcoords.x, vertex.texcoords.y);
         GL12.glColor4f(vertex.color.x, vertex.color.y, vertex.color.z, vertex.color.w);
         GL12.glNormal3f(vertex.normal.x, vertex.normal.y, vertex.normal.z);
-        GL12.glVertex3f(
-                (vertexPos.x - Main.camera.position.x)*((float)Main.currentWidth/(float)Main.width),
-                (vertexPos.y - Main.camera.position.y)*((float)Main.currentHeight/(float)Main.height),
-                (vertexPos.z - Main.camera.position.z)*((float)Main.currentHeight/(float)Main.height));
+        GL12.glVertex3f(vertexPos.x, vertexPos.y, vertexPos.z);
 
     }
 }

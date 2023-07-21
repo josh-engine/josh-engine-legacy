@@ -26,7 +26,7 @@ public class Example {
         GL12.glLightfv(GL12.GL_LIGHT0, GL12.GL_DIFFUSE, diffuse);
         GL12.glLightfv(GL12.GL_LIGHT0, GL12.GL_SPECULAR, specular);
 
-        Main.gameObjects.add(new TextTexturedCube(0, 0, -5));
+        Main.gameObjects.add(new Object(0, 0, -5));
     }
 
     public static Float movespeed = 0.25f;

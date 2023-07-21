@@ -43,11 +43,15 @@ public class RenderDispatcher {
         GL12.glEnable(GL_CULL_FACE); //On by default for performance
         GL12.glEnable(GL_DEPTH_TEST);
 
+        GL12.glCullFace(GL12.GL_BACK);
+
         if (doPerspectiveDraw){
             /*
-            This line is stolen from the *third* page of google, after using a time machine to go back to whenever GL12 was useful.
-            I don't know what anything here does, and probably couldn't figure it out if my life depended on it.
-            GL12 is entirely outdated and I promise I will update to GL30 soon and probably code a deferred renderer.
+            This line is stolen from the *third* page of google, after using a time machine to go back to
+            whenever OpenGL 1.2 was useful. I don't know what anything here does, and probably couldn't
+            figure it out if my life depended on it. OpenGL 1 is entirely outdated and I promise I will
+            update to modern OpenGL soon.
+
             Maybe.
 
             TLDR: DO NOT FUCK WITH GLFRUSTUM UNLESS YOU KNOW EXACTLY WHAT IT DOES AND HOW TO USE IT
@@ -61,10 +65,23 @@ public class RenderDispatcher {
         GL12.glMatrixMode(GL_MODELVIEW); //Setting up render
         GL12.glEnable(GL_TEXTURE_2D);
 
+        //Transform
+        GL12.glRotatef(Main.camera.rotation.x, 1, 0, 0);
+        GL12.glRotatef(Main.camera.rotation.y, 0, 1, 0);
+        GL12.glRotatef(Main.camera.rotation.z, 0, 0, 1);
+        GL12.glTranslatef(-1*Main.camera.position.x, -1*Main.camera.position.y, -1*Main.camera.position.z);
+
         for (GameObject gameObject : Main.gameObjects){
             gameObject.render();
         }
 
         glfwSwapBuffers(window); // update the screen with the newest frame (swapping the buffers)
+
+        //Transform but backwards TODO: Figure out how to use glPopMatrix instead
+        GL12.glTranslatef(Main.camera.position.x, Main.camera.position.y, Main.camera.position.z);
+        GL12.glRotatef(-Main.camera.rotation.z, 0, 0, 1);
+        GL12.glRotatef(-Main.camera.rotation.y, 0, 1, 0);
+        GL12.glRotatef(-Main.camera.rotation.x, 1, 0, 0);
+
     }
 }

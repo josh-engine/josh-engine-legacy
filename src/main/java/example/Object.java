@@ -1,18 +1,16 @@
 package example;
 
-import co.josh.engine.objects.GameObject;
-import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.Main;
 import co.josh.engine.components.Component;
+import co.josh.engine.objects.GameObject;
+import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.util.model.JoshModel;
 import co.josh.engine.util.model.ModelReader;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL12.GL_QUADS;
-
-public class TextTexturedCube implements GameObject {
+public class Object implements GameObject {
 
     float size;
 
@@ -21,16 +19,17 @@ public class TextTexturedCube implements GameObject {
     Vector3f position;
     Vector3f lastPosition;
 
-    public DrawBuilder db = new DrawBuilder(Main.camera, GL_QUADS);
+    public DrawBuilder db;
 
     JoshModel model;
 
-    public TextTexturedCube(float x, float y, float z){
+    public Object(float x, float y, float z){
         this.position = new Vector3f(x, y, z);
         this.lastPosition = new Vector3f(x, y, z);
-        this.model = ModelReader.loadJoshFormat(Main.dir + "/josh/models/cube.josh");
+        this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/cruiser.obj", "cruiser", true, true);
         this.size = 1f;
-        db.addShader(Example.setwhite);
+        db = new DrawBuilder(Main.camera, model.GL_MODE);
+        //db.addShader(Example.setwhite);
         //db.addShader(Example.colbynorm);
     }
 
@@ -40,7 +39,7 @@ public class TextTexturedCube implements GameObject {
     }
 
     public String getName() {
-        return "TextTexturedCube";
+        return "Object";
     }
 
     public Vector3f getPosition() {
@@ -64,6 +63,7 @@ public class TextTexturedCube implements GameObject {
     }
 
     public void render() {
+        model.scale = size;
         db.render(model.drawBuilderCommands(position, lastPosition), (float)Main.tpsCount / Main.tps);
     }
 
