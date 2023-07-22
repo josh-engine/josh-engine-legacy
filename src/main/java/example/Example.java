@@ -21,8 +21,8 @@ public class Example {
         Main.renderSystem.doPerspectiveDraw = true;
         TexturePreloader.load("/josh/img/");
         GL12.glLightModelfv(GL12.GL_LIGHT_MODEL_AMBIENT, ambient);
-        float[] diffuse = { 0.4f, 0.4f, 0.6f, 1f };
-        float[] specular = { 0f, 0f, 0.8f, 1f };
+        float[] diffuse = { 0.4f, 0.4f, 0.4f, 1f };
+        float[] specular = { 0f, 0f, 1f, 1f };
         GL12.glLightfv(GL12.GL_LIGHT0, GL12.GL_DIFFUSE, diffuse);
         GL12.glLightfv(GL12.GL_LIGHT0, GL12.GL_SPECULAR, specular);
 
