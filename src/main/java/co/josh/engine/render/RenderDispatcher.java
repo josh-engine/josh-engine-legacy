@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL12.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL12.GL_DEPTH_BUFFER_BIT;
 
 import co.josh.engine.Main;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 
 public class RenderDispatcher {
@@ -65,11 +66,13 @@ public class RenderDispatcher {
         GL12.glMatrixMode(GL_MODELVIEW); //Setting up render
         GL12.glEnable(GL_TEXTURE_2D);
 
+        Vector3f pos = Main.camera.position(Main.tpsCount / (float) Main.tps);
+
         //Transform
         GL12.glRotatef(Main.camera.rotation.x, 1, 0, 0);
         GL12.glRotatef(Main.camera.rotation.y, 0, 1, 0);
         GL12.glRotatef(Main.camera.rotation.z, 0, 0, 1);
-        GL12.glTranslatef(-1*Main.camera.position.x, -1*Main.camera.position.y, -1*Main.camera.position.z);
+        GL12.glTranslatef(-1*pos.x, -1*pos.y, -1*pos.z);
 
         for (GameObject gameObject : Main.gameObjects){
             gameObject.render();
@@ -78,7 +81,7 @@ public class RenderDispatcher {
         glfwSwapBuffers(window); // update the screen with the newest frame (swapping the buffers)
 
         //Transform but backwards TODO: Figure out how to use glPopMatrix instead
-        GL12.glTranslatef(Main.camera.position.x, Main.camera.position.y, Main.camera.position.z);
+        GL12.glTranslatef(pos.x, pos.y, pos.z);
         GL12.glRotatef(-Main.camera.rotation.z, 0, 0, 1);
         GL12.glRotatef(-Main.camera.rotation.y, 0, 1, 0);
         GL12.glRotatef(-Main.camera.rotation.x, 1, 0, 0);

@@ -259,7 +259,7 @@ public class Main {
                 mouse.update();
 
                 for (GameObject gameObject : gameObjects){
-                    gameObject.setLastPosition(gameObject.getPosition());
+                    gameObject.setLastTransform(gameObject.getTransform());
                     gameObject.getComponents().forEach(Component::tickValues);
                 }
                 try{

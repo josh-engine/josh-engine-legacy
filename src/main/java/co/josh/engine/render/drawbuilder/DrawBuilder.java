@@ -1,5 +1,6 @@
 package co.josh.engine.render.drawbuilder;
 
+import co.josh.engine.Main;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.drawbuilder.commands.DrawBuilderCommand;
 import co.josh.engine.render.drawbuilder.commands.VertexCommand;
@@ -32,14 +33,6 @@ public class DrawBuilder {
 
     public void addShader(JShader shader){
         this.shaders.add(shader);
-    }
-
-    public static Vector3f applyCameraRotationMatrix(Vector3f start, Camera camera){
-        Matrix4f rotationMatrix = camera.rotationMatrix;
-        Vector3f relativeVector = start.sub(camera.position);
-        Vector3f rotatedRelativeVector = new Vector3f();
-        rotationMatrix.transformPosition(relativeVector, rotatedRelativeVector);
-        return new Vector3f(rotatedRelativeVector).add(camera.position);
     }
 
     public Vertex3F next(){

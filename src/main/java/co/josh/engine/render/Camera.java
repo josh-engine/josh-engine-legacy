@@ -4,17 +4,26 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Camera {
-    public Vector3f position;
+    public Vector3f position(float tps){
+        return lastPosition.lerp(nextPosition, tps);
+    }
+    Vector3f lastPosition;
+    public Vector3f nextPosition;
     public Matrix4f rotationMatrix;
     public Vector3f rotation;
     public Camera(Vector3f position, Vector3f rotation){
-        this.position = position;
+        this.lastPosition = position;
+        this.nextPosition = position;
         this.rotation = rotation;
         updateRotationMatrix();
     }
 
+    public void updateLast(){
+        this.lastPosition = nextPosition;
+    }
+
     public void moveWithRotation(Vector3f change){
-        position.add(change.mulTransposeDirection(rotationMatrix));
+        nextPosition.add(change.mulTransposeDirection(rotationMatrix));
     }
 
     public void rotate(Vector3f change){

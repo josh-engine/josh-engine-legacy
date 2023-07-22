@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class Object implements GameObject {
+public class Object2 implements GameObject {
 
     ArrayList<Component> components = new ArrayList<>();
 
@@ -24,17 +24,14 @@ public class Object implements GameObject {
 
     JoshModel model;
 
-    public Object(float x, float y, float z){
+    public Object2(float x, float y, float z){
         this.transform = new Transform(new Vector3f(x, y, z));
         this.lastTransform = new Transform(new Vector3f(x, y, z));
-        this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/stanfordbunny.obj", "", true, false);
-        this.transform.scale = new Vector3f(20f, 20f, 20f);
-        this.lastTransform.scale = new Vector3f(20f, 20f, 20f);
-        this.transform.rotation = new Vector3f(0f, 0f, 0f);
-        this.lastTransform.rotation = new Vector3f(0f, 0f, 0f);
+
+        transform.scale = new Vector3f(3f);
+
+        this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/cruiser.obj", "cruiser", true, true);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
-        //db.addShader(Example.setwhite);
-        //db.addShader(Example.colbynorm);
     }
 
     @Override
@@ -43,7 +40,7 @@ public class Object implements GameObject {
     }
 
     public String getName() {
-        return "Object";
+        return "Object2";
     }
 
     public Transform getTransform() {
@@ -63,10 +60,6 @@ public class Object implements GameObject {
     }
 
     public void render() {
-        Vector3f pos = Main.camera.position((float)Main.tpsCount / Main.tps);
-        float[] light = {pos.x, pos.y, pos.z, 1f};
-        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, light);
-
         db.render(model.drawBuilderCommands(transform, lastTransform), (float)Main.tpsCount / Main.tps);
     }
 

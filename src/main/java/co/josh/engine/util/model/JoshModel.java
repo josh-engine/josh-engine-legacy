@@ -1,6 +1,7 @@
 package co.josh.engine.util.model;
 
 import co.josh.engine.render.drawbuilder.commands.*;
+import co.josh.engine.util.Transform;
 import co.josh.engine.util.render.Vertex3F;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
@@ -31,9 +32,7 @@ public class JoshModel {
         this.tex = textured;
     }
 
-    public float scale = 1f;
-
-    public ArrayList<DrawBuilderCommand> drawBuilderCommands(Vector3f position, Vector3f lastposition){
+    public ArrayList<DrawBuilderCommand> drawBuilderCommands(Transform transform, Transform lastTransform){
         ArrayList<DrawBuilderCommand> commands = new ArrayList<>();
         commands.add(new UnbindTexturesCommand());
         if (lit){
@@ -45,10 +44,9 @@ public class JoshModel {
         commands.add(new GlBeginCommand());
         for (Vertex3F vertex : vertices){
             Vertex3F vert = vertex.clone();
-            vert.position.mul(scale);
-            vert.lastposition.mul(scale);
-            vert.position.add(position);
-            vert.lastposition.add(lastposition);
+            vert.position = transform.apply(vert.position);
+            vert.lastposition = lastTransform.apply(vert.lastposition);
+            vert.normal = Transform.applyRotationMatrix(vert.normal, new Vector3f(), transform.rotationMatrix);
             commands.add(new VertexCommand(vert));
         }
         commands.add(new GlEndCommand());

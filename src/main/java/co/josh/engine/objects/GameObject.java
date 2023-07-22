@@ -1,6 +1,7 @@
 package co.josh.engine.objects;
 
 import co.josh.engine.components.Component;
+import co.josh.engine.util.Transform;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -9,24 +10,18 @@ public interface GameObject {
 
     String getName();
 
-    Vector3f getPosition();
+    Transform getTransform();
 
-    Vector3f getLastPosition();
+    Transform getLastTransform();
 
-    void setPosition(Vector3f position);
+    void setTransform(Transform t);
 
-    void setLastPosition(Vector3f lastPosition);
-
-    void movePosition(int x, int y, int z);
+    void setLastTransform(Transform t);
 
     void render();
 
     ArrayList<Component> getComponents();
 
     void addComponent(Component c);
-
-    float getSize();
-
-    void setSize(float size);
 
 }
