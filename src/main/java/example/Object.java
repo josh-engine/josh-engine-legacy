@@ -29,7 +29,6 @@ public class Object implements GameObject {
         this.lastPosition = new Vector3f(x, y, z);
         this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/stanfordbunny.obj", "", true, false);
         this.size = 20f;
-        this.model = ModelReader.loadJoshFormat(Main.dir + "/josh/models/cube.josh");
         db = new DrawBuilder(Main.camera, model.GL_MODE);
         //db.addShader(Example.setwhite);
         //db.addShader(Example.colbynorm);
