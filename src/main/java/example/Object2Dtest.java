@@ -8,11 +8,10 @@ import co.josh.engine.util.Transform;
 import co.josh.engine.util.model.JoshModel;
 import co.josh.engine.util.model.ModelReader;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class Object implements GameObject {
+public class Object2Dtest implements GameObject {
 
     ArrayList<Component> components = new ArrayList<>();
 
@@ -24,17 +23,12 @@ public class Object implements GameObject {
 
     JoshModel model;
 
-
-    public Object(float x, float y, float z){
+    public Object2Dtest(float x, float y, float z){
         this.transform = new Transform(new Vector3f(x, y, z));
         this.lastTransform = new Transform(new Vector3f(x, y, z));
-        this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/stanfordbunny.obj", "", true, false);
-        this.transform.scale = new Vector3f(20f, 20f, 20f);
-        this.lastTransform.scale = new Vector3f(20f, 20f, 20f);
-        this.transform.rotation = new Vector3f(0f, 0f, 0f);
-        this.lastTransform.rotation = new Vector3f(0f, 0f, 0f);
+
+        this.model = ModelReader.loadJoshFormat(Main.dir + "/josh/models/e.josh", false);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
-        //db.addShader(Example.setwhite);
         //db.addShader(Example.colbynorm);
     }
 
@@ -44,7 +38,7 @@ public class Object implements GameObject {
     }
 
     public String getName() {
-        return "Object";
+        return "Object2D";
     }
 
     public Transform getTransform() {
@@ -64,16 +58,10 @@ public class Object implements GameObject {
     }
 
     public void render3d() {
-        Vector3f pos = Main.camera.transform.position;
-        float[] light = {pos.x, pos.y, pos.z, 1f};
-        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, light);
-
-        db.render(model.drawBuilderCommands(transform, lastTransform), (float)Main.tpsCount / Main.tps);
-
     }
 
     public void render2d(){
-
+        db.render(model.drawBuilderCommands(transform, lastTransform), (float)Main.tpsCount / Main.tps);
     }
 
     @Override

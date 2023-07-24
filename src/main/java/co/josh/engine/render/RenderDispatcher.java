@@ -41,12 +41,13 @@ public class RenderDispatcher {
         GL12.glMatrixMode(GL_PROJECTION); //Setting up camera
         GL12.glLoadIdentity();
 
+
         GL12.glEnable(GL_CULL_FACE); //On by default for performance
         GL12.glEnable(GL_DEPTH_TEST);
 
         GL12.glCullFace(GL12.GL_BACK);
 
-        if (doPerspectiveDraw){
+        if (doPerspectiveDraw) {
             /*
             This line is stolen from the *third* page of google, after using a time machine to go back to
             whenever OpenGL 1.2 was useful. I don't know what anything here does, and probably couldn't
@@ -58,33 +59,46 @@ public class RenderDispatcher {
             TLDR: DO NOT FUCK WITH GLFRUSTUM UNLESS YOU KNOW EXACTLY WHAT IT DOES AND HOW TO USE IT
             */
             GL12.glFrustum(-0.88f, 0.88f, -0.5f, 0.5f, 0.8f, 300.0f);
-        }else{
-            GL12.glOrtho(0, Main.currentWidth, 0, Main.currentHeight, 0, -1);
+
+            GL12.glMatrixMode(GL_MODELVIEW); //Setting up render
+            GL12.glEnable(GL_TEXTURE_2D);
+
+            //Vector3f pos = Main.camera.position((float)Main.tpsCount / Main.tps);
+
+            Vector3f pos = Main.camera.transform.position;
+
+            Vector3f rot = Main.camera.transform.rotation;
+
+            //Transform
+            GL12.glRotatef(rot.x, 1, 0, 0);
+            GL12.glRotatef(rot.y, 0, 1, 0);
+            GL12.glRotatef(rot.z, 0, 0, 1);
+            GL12.glTranslatef(-1*pos.x, -1*pos.y, -1*pos.z);
+
+            for (GameObject gameObject : Main.gameObjects){
+                gameObject.render3d();
+            }
+            GL12.glLoadIdentity();
         }
 
+        GL12.glDisable(GL_TEXTURE_2D);
+        GL12.glDisable(GL_CULL_FACE);
+
+        GL12.glMatrixMode(GL_PROJECTION); //Setting up camera
+        GL12.glLoadIdentity();
+
+        GL12.glOrtho(0, Main.width, 0, Main.height, 0, -1);
 
         GL12.glMatrixMode(GL_MODELVIEW); //Setting up render
         GL12.glEnable(GL_TEXTURE_2D);
 
-        Vector3f pos = Main.camera.position(Main.tpsCount / (float) Main.tps);
-
-        //Transform
-        GL12.glRotatef(Main.camera.rotation.x, 1, 0, 0);
-        GL12.glRotatef(Main.camera.rotation.y, 0, 1, 0);
-        GL12.glRotatef(Main.camera.rotation.z, 0, 0, 1);
-        GL12.glTranslatef(-1*pos.x, -1*pos.y, -1*pos.z);
-
         for (GameObject gameObject : Main.gameObjects){
-            gameObject.render();
+            gameObject.render2d();
         }
 
-        glfwSwapBuffers(window); // update the screen with the newest frame (swapping the buffers)
+        GL12.glLoadIdentity();
 
-        //Transform but backwards TODO: Figure out how to use glPopMatrix instead
-        GL12.glTranslatef(pos.x, pos.y, pos.z);
-        GL12.glRotatef(-Main.camera.rotation.z, 0, 0, 1);
-        GL12.glRotatef(-Main.camera.rotation.y, 0, 1, 0);
-        GL12.glRotatef(-Main.camera.rotation.x, 1, 0, 0);
+        glfwSwapBuffers(window); // update the screen with the newest frame (swapping the buffers)
 
     }
 }

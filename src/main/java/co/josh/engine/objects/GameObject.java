@@ -2,7 +2,6 @@ package co.josh.engine.objects;
 
 import co.josh.engine.components.Component;
 import co.josh.engine.util.Transform;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,9 @@ public interface GameObject {
 
     void setLastTransform(Transform t);
 
-    void render();
+    void render3d();
+
+    void render2d();
 
     ArrayList<Component> getComponents();
 

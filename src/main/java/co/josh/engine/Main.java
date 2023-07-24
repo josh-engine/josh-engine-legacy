@@ -4,11 +4,9 @@ import co.josh.engine.objects.GameObject;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.RenderDispatcher;
 import co.josh.engine.render.joshshade.JoshShaderLoader;
-import co.josh.engine.util.annotations.hooks.Startup;
+import co.josh.engine.util.annotations.hooks.*;
 import co.josh.engine.util.exceptions.WindowCreateFailure;
 import co.josh.engine.util.input.KeyboardHandler;
-import co.josh.engine.util.annotations.hooks.Exit;
-import co.josh.engine.util.annotations.hooks.Gameloop;
 import co.josh.engine.util.input.MouseHandler;
 import org.joml.Vector3f;
 import org.lwjgl.Version;
@@ -48,10 +46,23 @@ public class Main {
 
     public static float targetFps = 60f;
 
-    public static float frameWait = (int)((1f/targetFps)*1000000000);
+    public static float frameWait = (int)((1f/targetFps)*1000);
+    public static float tickDeltaTime = 0f;
+    public static float deltaTime = 0f;
+
 
     public static void recalcFrameWait(){
-        frameWait = (int)((1f/targetFps)*1000000000);
+        frameWait = (int)((1f/targetFps)*1000);
+    }
+
+    public static float targetTps = 30f;
+
+    public static float tickWait = (int)((1f/targetTps)*1000);
+
+    public static float actualTickWait = tickWait;
+
+    public static void recalcTickWait(){
+        tickWait = (int)((1f/targetTps)*1000);
     }
 
     public static Camera camera;
@@ -73,6 +84,9 @@ public class Main {
     public static int tps = 20;
     public static int tpsCount;
     public float clockSubtract = 0;
+
+    public static long tickElapsedTime = 0;
+    public static long frameElapsedTime = 0;
 
     public static RenderDispatcher renderSystem;
 
@@ -132,7 +146,7 @@ public class Main {
             e.printStackTrace();
             System.out.println("Could not find engine directory or create it! Textures will not load!");
         }
-        // Setup an error callback. The default implementation
+        // Set up an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -226,8 +240,8 @@ public class Main {
             }
         });
 
-        long tickLastUpdateTime = System.nanoTime();
-        long frameLastUpdateTime = System.nanoTime();
+        long tickLastUpdateTime = System.currentTimeMillis();
+        long frameLastUpdateTime = System.currentTimeMillis();
 
 
         try{
@@ -236,7 +250,12 @@ public class Main {
             e.printStackTrace();
             return;
         }
-        Set<Method> gameloopRunnables = getAllAnnotatedWith(Gameloop.class);
+
+        Set<Method> preRender = getAllAnnotatedWith(PreRender.class);
+        Set<Method> postRender = getAllAnnotatedWith(PostRender.class);
+
+        Set<Method> preTick = getAllAnnotatedWith(PreTick.class);
+        Set<Method> postTick = getAllAnnotatedWith(PostTick.class);
         while (!glfwWindowShouldClose(window) ) {
             if (glfwGetTime()-clockSubtract > 1f) {
                 fps = fpsCount;
@@ -249,33 +268,52 @@ public class Main {
                 System.out.println("FPS:" + fps + " TPS: " + tps);
             }
 
-            long now = System.nanoTime();
-            long tickElapsedTime = now - tickLastUpdateTime;
-            long frameElapsedTime = now - frameLastUpdateTime;
+            long now = System.currentTimeMillis();
+            tickElapsedTime = now - tickLastUpdateTime;
+            frameElapsedTime = now - frameLastUpdateTime;
 
-            if (tickElapsedTime >= 33333333) { //30 TPS ish because it looks smoother with 60FPS
-                //THIS IS WHERE EVERYTHING IMPORTANT HAPPENS
+            if (frameElapsedTime  >= frameWait){
+                deltaTime = frameElapsedTime/1000f;
+                try{
+                    run(preRender, null);
+                } catch (Exception e){
+                    e.printStackTrace();
+                    return;
+                }
+                renderSystem.render(window);
+                try{
+                    run(postRender, null);
+                } catch (Exception e){
+                    e.printStackTrace();
+                    return;
+                }
+                fpsCount++; //Rendered a frame so yeah
+                frameLastUpdateTime = now;
+            }
+
+            if (tickElapsedTime >= tickWait) {
+                tickDeltaTime = (Main.tickElapsedTime/1000f);
                 keyboard.update();
                 mouse.update();
 
+                try{
+                    run(preTick, null);
+                } catch (Exception e){
+                    e.printStackTrace();
+                    return;
+                }
                 for (GameObject gameObject : gameObjects){
                     gameObject.setLastTransform(gameObject.getTransform());
-                    gameObject.getComponents().forEach(Component::tickValues);
+                    gameObject.getComponents().forEach(Component::onTick);
                 }
                 try{
-                    run(gameloopRunnables, null);
+                    run(postTick, null);
                 } catch (Exception e){
                     e.printStackTrace();
                     return;
                 }
                 tpsCount++;
                 tickLastUpdateTime = now;
-            }
-
-            if (frameElapsedTime  >= frameWait){
-                renderSystem.render(window);
-                fpsCount++; //Rendered a frame so yeah
-                frameLastUpdateTime = now;
             }
         }
     }

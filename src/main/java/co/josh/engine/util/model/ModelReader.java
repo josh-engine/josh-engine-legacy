@@ -32,59 +32,64 @@ public class ModelReader {
             //
             while (scanner.hasNextLine()){
                 String line = scanner.nextLine();
+                String[] split;
+                Float[] floats;
                 if (!line.startsWith("#")){
-                    // TODO: Switch statement instead of crap ton of if statements
-                    if (line.startsWith("v ")){
-                        //vertex position
-                        line = line.substring(2); // "v 1.0 1.0 1.0" to "1.0 1.0 1.0"
-                        String[] split = line.split(" ");
-                        Float[] floats = Arrays.stream(split).map(Float::valueOf).toArray(Float[]::new);
-                        vertexPositions.add(new Vector3f(floats[0], floats[1], floats[2]));
-                    }
-                    if (line.startsWith("vt")){
-                        //vertex texcoord
-                        line = line.substring(3); // "vt 1.0 1.0" to "1.0 1.0"
-                        String[] split = line.split(" ");
-                        Float[] floats = Arrays.stream(split).map(Float::valueOf).toArray(Float[]::new);
-                        vertexTexcoords.add(new Vector2f(floats[0], floats[1]));
-                        /*
-                        I know technically it only requires one coordinate to be valid in the official specs
-                        but fuck it this is JoshEngine nobody gives a crap.
 
-                        I'll probably remember to write this down in the docs eventually when I get around to
-                        making those.
-                        */
-                    }
-                    if (line.startsWith("vn")){
-                        //vertex normal
-                        line = line.substring(3); // "vn 0.0 0.0 1.0" to "0.0 0.0 1.0"
-                        String[] split = line.split(" ");
-                        Float[] floats = Arrays.stream(split).map(Float::valueOf).toArray(Float[]::new);
-                        vertexNormals.add(new Vector3f(floats[0], floats[1], floats[2]));
-                    }
-                    if (line.startsWith("f")){
-                        //face
-                        line = line.substring(2); //"f 1//2 3//2 2//2" to "1//2 3//2 2//2"
-                        String[] split = line.split(" ");
-                        for (String vertex : split){
-                            String e0 = vertex.split("//")[0]; //entry 0
-                            if (Objects.equals(e0, vertex)){
-                                // vertex/texcoord or vertex/texcoord/normal or vertex
-                                String[] splitVertex = vertex.split("/");
-                                Integer[] vertexParts = Arrays.stream(splitVertex).map(Integer::valueOf).toArray(Integer[]::new);
-                                if (vertexParts.length == 1){
-                                    objPreVertexArrayList.add(new OBJPreVertex(vertexParts[0]-1));
-                                } else if (vertexParts.length == 2){
-                                    objPreVertexArrayList.add(new OBJPreVertex(vertexParts[0]-1, vertexParts[1]-1, true));
-                                } else if (vertexParts.length == 3){
-                                    objPreVertexArrayList.add(new OBJPreVertex(vertexParts[0]-1, vertexParts[1]-1, vertexParts[2]-1));
-                                }
-                            } else {
-                                // vertex//normal
-                                String[] splitVertex = vertex.split("//");
-                                Integer[] vertexParts = Arrays.stream(splitVertex).map(Integer::valueOf).toArray(Integer[]::new);
-                                if (vertexParts.length > 1){
-                                    objPreVertexArrayList.add(new OBJPreVertex(vertexParts[0]-1, vertexParts[1]-1, false));
+                    switch (line.split(" ")[0]) {
+                        case ("v") -> {
+                            //positions
+                            line = line.substring(2); // "v 1.0 1.0 1.0" to "1.0 1.0 1.0"
+                            split = line.split(" ");
+                            floats = Arrays.stream(split).map(Float::valueOf).toArray(Float[]::new);
+                            vertexPositions.add(new Vector3f(floats[0], floats[1], floats[2]));
+                        }
+                        case ("vt") -> {
+                            //texcoords
+                            /*
+                            I know technically it only requires one coordinate to be valid in the official specs
+                            but JoshEngine (although with modification it could) doesn't support 1d textures.
+
+                            I'll probably remember to write this down in the docs eventually when I get around to
+                            making those.
+                            */
+                            line = line.substring(3); // "vt 1.0 1.0" to "1.0 1.0"
+                            split = line.split(" ");
+                            floats = Arrays.stream(split).map(Float::valueOf).toArray(Float[]::new);
+                            vertexTexcoords.add(new Vector2f(floats[0], floats[1]));
+                        }
+
+                        case ("vn") -> {
+                            //normals
+                            line = line.substring(3); // "vn 0.0 0.0 1.0" to "0.0 0.0 1.0"
+                            split = line.split(" ");
+                            floats = Arrays.stream(split).map(Float::valueOf).toArray(Float[]::new);
+                            vertexNormals.add(new Vector3f(floats[0], floats[1], floats[2]));
+                        }
+                        case ("f") -> {
+                            //faces
+                            line = line.substring(2); //"f 1//2 3//2 2//2" to "1//2 3//2 2//2"
+                            split = line.split(" ");
+                            for (String vertex : split) {
+                                String e0 = vertex.split("//")[0]; //entry 0
+                                if (Objects.equals(e0, vertex)) {
+                                    // vertex/texcoord or vertex/texcoord/normal or vertex
+                                    String[] splitVertex = vertex.split("/");
+                                    Integer[] vertexParts = Arrays.stream(splitVertex).map(Integer::valueOf).toArray(Integer[]::new);
+                                    if (vertexParts.length == 1) {
+                                        objPreVertexArrayList.add(new OBJPreVertex(vertexParts[0] - 1));
+                                    } else if (vertexParts.length == 2) {
+                                        objPreVertexArrayList.add(new OBJPreVertex(vertexParts[0] - 1, vertexParts[1] - 1, true));
+                                    } else if (vertexParts.length == 3) {
+                                        objPreVertexArrayList.add(new OBJPreVertex(vertexParts[0] - 1, vertexParts[1] - 1, vertexParts[2] - 1));
+                                    }
+                                } else {
+                                    // vertex//normal
+                                    String[] splitVertex = vertex.split("//");
+                                    Integer[] vertexParts = Arrays.stream(splitVertex).map(Integer::valueOf).toArray(Integer[]::new);
+                                    if (vertexParts.length > 1) {
+                                        objPreVertexArrayList.add(new OBJPreVertex(vertexParts[0] - 1, vertexParts[1] - 1, false));
+                                    }
                                 }
                             }
                         }
@@ -138,7 +143,7 @@ public class ModelReader {
         }
     }
 
-    public static JoshModel loadJoshFormat(String fileName){
+    public static JoshModel loadJoshFormat(String fileName, boolean lit){
         ArrayList<Vertex3F> vertices = new ArrayList<>();
         try {
             File file = new File(fileName);
@@ -166,7 +171,7 @@ public class ModelReader {
                             .uv(floats[7], floats[8]));
                 }
                 scanner.close();
-                return new JoshModel(textureName, GL_MODE, vertices, true, true);
+                return new JoshModel(textureName, GL_MODE, vertices, lit, true);
             } else if (version.startsWith("version 11")) {
                 while (scanner.hasNextLine()) {
                     String raw = scanner.nextLine();
@@ -180,9 +185,9 @@ public class ModelReader {
                             .normal(floats[9], floats[10], floats[11]));
                 }
                 scanner.close();
-                return new JoshModel(textureName, GL_MODE, vertices, true, true);
+                return new JoshModel(textureName, GL_MODE, vertices, lit, true);
             } else if (version.startsWith("version 12")) {
-                boolean lit = Objects.equals(scanner.nextLine(), "1");
+                boolean specifiedLit = Objects.equals(scanner.nextLine(), "1");
                 while (scanner.hasNextLine()) {
                     String raw = scanner.nextLine();
                     String[] split = raw.split(" ");
@@ -195,7 +200,7 @@ public class ModelReader {
                             .normal(floats[9], floats[10], floats[11]));
                 }
                 scanner.close();
-                return new JoshModel(textureName, GL_MODE, vertices, lit, true);
+                return new JoshModel(textureName, GL_MODE, vertices, specifiedLit && lit, true);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -1,8 +1,5 @@
 package co.josh.engine.util;
 
-import co.josh.engine.Main;
-import co.josh.engine.render.Camera;
-import co.josh.engine.render.drawbuilder.DrawBuilder;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -46,5 +43,9 @@ public class Transform {
         Vector3f rotatedRelativeVector = new Vector3f();
         rotationMatrix.transformPosition(relativeVector, rotatedRelativeVector);
         return new Vector3f(rotatedRelativeVector).add(origin);
+    }
+
+    public Transform clone(){
+        return new Transform(new Vector3f(position.x(), position.y(), position.z()), new Vector3f(rotation.x(), rotation.y(), rotation.z()), new Vector3f(scale.x(), scale.y(), scale.z()));
     }
 }

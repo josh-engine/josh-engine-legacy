@@ -22,11 +22,11 @@ public class AddSCommand implements JShaderCommand {
         index = Objects.requireNonNull(ints)[0];
         int skipindex = ints[1];
         if (index == null) {
-            throw new JoshShaderFailure("AddStatic: No insert index found!");
+            throw new JoshShaderFailure("AddStatic: No index found!");
         }
         value = findValue(args, skipindex);
         if (value == null) {
-            throw new JoshShaderFailure("AddStatic: No value to insert!");
+            throw new JoshShaderFailure("AddStatic: No value!");
         }
     }
 

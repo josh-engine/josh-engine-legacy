@@ -2,7 +2,7 @@ package example;
 
 import co.josh.engine.Main;
 import co.josh.engine.render.joshshade.JShader;
-import co.josh.engine.util.annotations.hooks.Gameloop;
+import co.josh.engine.util.annotations.hooks.PostTick;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -33,13 +33,17 @@ public class Example {
 
         Main.gameObjects.add(new Object2(-5f, -2f, -5));
 
+        Main.gameObjects.add(new Object2Dtest(100f, 100f, 0f));
+
+
     }
 
-    public static Float movespeed = 0.25f;
+    public static Float movespeed = 8f;
 
-    @Gameloop
+    @PostTick
     public static void movement(){
         Main.camera.updateLast();
+        movespeed*=Main.deltaTime;
         //Movement
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_W)){
             Main.camera.moveWithRotation(new Vector3f(0, 0, -1*movespeed));
@@ -54,25 +58,26 @@ public class Example {
             Main.camera.moveWithRotation(new Vector3f(1*movespeed, 0, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_SPACE)){
-            Main.camera.nextPosition.add(new Vector3f(0, 1*movespeed, 0));
+            Main.camera.transform.position.add(new Vector3f(0, 1*movespeed, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)){
-            Main.camera.nextPosition.add(new Vector3f(0, -1*movespeed, 0));
+            Main.camera.transform.position.add(new Vector3f(0, -1*movespeed, 0));
         }
 
         //Rotation
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_UP)){
-            Main.camera.rotate(new Vector3f(-3, 0, 0));
+            Main.camera.rotate(new Vector3f(-16*movespeed, 0, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_DOWN)){
-            Main.camera.rotate(new Vector3f(3, 0, 0));
+            Main.camera.rotate(new Vector3f(16*movespeed, 0, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT)){
-            Main.camera.rotate(new Vector3f(0, 3, 0));
+            Main.camera.rotate(new Vector3f(0, 16*movespeed, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT)){
-            Main.camera.rotate(new Vector3f(0, -3, 0));
+            Main.camera.rotate(new Vector3f(0, -16*movespeed, 0));
         }
+        movespeed/=Main.deltaTime;
     }
 
 }

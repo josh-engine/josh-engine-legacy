@@ -8,7 +8,6 @@ import co.josh.engine.util.Transform;
 import co.josh.engine.util.model.JoshModel;
 import co.josh.engine.util.model.ModelReader;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -32,6 +31,7 @@ public class Object2 implements GameObject {
 
         this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/cruiser.obj", "cruiser", true, true);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
+        //db.addShader(Example.colbynorm);
     }
 
     @Override
@@ -59,8 +59,12 @@ public class Object2 implements GameObject {
         this.lastTransform = t;
     }
 
-    public void render() {
+    public void render3d() {
         db.render(model.drawBuilderCommands(transform, lastTransform), (float)Main.tpsCount / Main.tps);
+    }
+
+    public void render2d(){
+
     }
 
     @Override

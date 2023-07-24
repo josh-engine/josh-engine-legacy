@@ -6,7 +6,9 @@ public interface Component {
 
     String getName();
 
-    void tickValues();
+    void onTick();
+
+    void onFrame();
 
     GameObject getParent();
 
