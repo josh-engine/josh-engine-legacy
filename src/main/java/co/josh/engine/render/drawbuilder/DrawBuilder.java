@@ -1,13 +1,11 @@
 package co.josh.engine.render.drawbuilder;
 
-import co.josh.engine.Main;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.drawbuilder.commands.DrawBuilderCommand;
 import co.josh.engine.render.drawbuilder.commands.VertexCommand;
 import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.render.joshshade.ShadersObject;
 import co.josh.engine.util.render.Vertex3F;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 

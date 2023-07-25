@@ -64,12 +64,7 @@ public class Object implements GameObject {
     }
 
     public void render3d() {
-        Vector3f pos = Main.camera.transform.position;
-        float[] light = {pos.x, pos.y, pos.z, 1f};
-        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, light);
-
         db.render(model.drawBuilderCommands(transform, lastTransform), (float)Main.tpsCount / Main.tps);
-
     }
 
     public void render2d(){

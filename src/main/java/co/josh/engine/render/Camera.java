@@ -16,6 +16,8 @@ public class Camera {
 
     public Transform lastTransform;
 
+    public float clippingPlane = 0.1f;
+
     public Camera(Vector3f position, Vector3f rotation){
         lastTransform = new Transform(position, rotation, new Vector3f());
         transform = new Transform(position, rotation, new Vector3f());

@@ -7,8 +7,15 @@ import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.util.Transform;
 import co.josh.engine.util.model.JoshModel;
 import co.josh.engine.util.model.ModelReader;
+import co.josh.engine.util.render.Vertex3F;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
 public class Object2Dtest implements GameObject {
@@ -22,6 +29,8 @@ public class Object2Dtest implements GameObject {
     public DrawBuilder db;
 
     JoshModel model;
+
+    JoshModel b;
 
     public Object2Dtest(float x, float y, float z){
         this.transform = new Transform(new Vector3f(x, y, z));

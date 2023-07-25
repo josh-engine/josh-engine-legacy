@@ -26,8 +26,7 @@ public class DumpToStreamCommand implements JShaderCommand {
 
     public ArrayList<Object> run() {
         for (Object o : input){
-            if (o instanceof Vertex3F){
-                Vertex3F v = (Vertex3F) o;
+            if (o instanceof Vertex3F v){
                 input.add(v.position.x);
                 input.add(v.position.y);
                 input.add(v.position.z);

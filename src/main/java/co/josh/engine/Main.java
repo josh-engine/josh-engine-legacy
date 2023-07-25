@@ -4,6 +4,7 @@ import co.josh.engine.objects.GameObject;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.RenderDispatcher;
 import co.josh.engine.render.joshshade.JoshShaderLoader;
+import co.josh.engine.render.lights.Light;
 import co.josh.engine.util.annotations.hooks.*;
 import co.josh.engine.util.exceptions.WindowCreateFailure;
 import co.josh.engine.util.input.KeyboardHandler;
@@ -15,6 +16,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.system.MemoryStack;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -44,12 +46,15 @@ public class Main {
     public static int width;
     public static int height;
 
+    public static ArrayList<Light> lights = new ArrayList<>();
+
     public static float targetFps = 60f;
 
     public static float frameWait = (int)((1f/targetFps)*1000);
     public static float tickDeltaTime = 0f;
     public static float deltaTime = 0f;
 
+    public static float[] ambient = {0.25f, 0.25f, 0.25f, 1f};
 
     public static void recalcFrameWait(){
         frameWait = (int)((1f/targetFps)*1000);
@@ -280,6 +285,7 @@ public class Main {
                     e.printStackTrace();
                     return;
                 }
+                GL12.glLightModelfv(GL12.GL_LIGHT_MODEL_AMBIENT, ambient);
                 renderSystem.render(window);
                 try{
                     run(postRender, null);

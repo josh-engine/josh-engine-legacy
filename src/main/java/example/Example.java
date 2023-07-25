@@ -2,31 +2,32 @@ package example;
 
 import co.josh.engine.Main;
 import co.josh.engine.render.joshshade.JShader;
+import co.josh.engine.render.lights.Light;
 import co.josh.engine.util.annotations.hooks.PostTick;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL12;
 
 public class Example {
     public static JShader setwhite = new JShader("/josh/shaders/resetcolor.jcsl");
 
     public static JShader colbynorm = new JShader("/josh/shaders/colorbynormal.jcsl");
 
-    public static float[] ambient = {0.25f, 0.25f, 0.25f, 1f};
+    public static Light light0;
 
     @co.josh.engine.util.annotations.hooks.Startup
     public static void onStart(){
         System.out.println("Look at me! I'm a startup script!");
 
+        //FontLoader.generateTextureAtlas(new Font("Courier", Font.PLAIN, 24));
+        //System.out.println("abcdefg");
         TexturePreloader.load("/josh/img/");
 
-        //OpenGL Light Setup. TODO: make lights easier
-        GL12.glLightModelfv(GL12.GL_LIGHT_MODEL_AMBIENT, ambient);
-        float[] diffuse = { 0.4f, 0.4f, 0.4f, 1f };
-        float[] specular = { 0f, 0f, 1f, 1f };
-        GL12.glLightfv(GL12.GL_LIGHT0, GL12.GL_DIFFUSE, diffuse);
-        GL12.glLightfv(GL12.GL_LIGHT0, GL12.GL_SPECULAR, specular);
+        light0 = new Light();
+        //light stays w camera every frame. check end of movement()
+        light0.create(new Vector3f(), true,
+                new Vector4f(0.4f, 0.4f, 0.4f, 1f), new Vector4f( 1f, 1f, 1f, 1f));
 
         Main.gameObjects.add(new Object(0, -3f, -5));
         Main.gameObjects.get(0).addComponent(new RotateComponent(Main.gameObjects.get(0)));
@@ -34,50 +35,50 @@ public class Example {
         Main.gameObjects.add(new Object2(-5f, -2f, -5));
 
         Main.gameObjects.add(new Object2Dtest(100f, 100f, 0f));
-
-
     }
 
-    public static Float movespeed = 8f;
+    public static Float moveSpeed = 8f;
 
     @PostTick
     public static void movement(){
         Main.camera.updateLast();
-        movespeed*=Main.deltaTime;
+        moveSpeed *= Main.deltaTime;
         //Movement
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_W)){
-            Main.camera.moveWithRotation(new Vector3f(0, 0, -1*movespeed));
+            Main.camera.moveWithRotation(new Vector3f(0, 0, -1 * moveSpeed));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_S)){
-            Main.camera.moveWithRotation(new Vector3f(0, 0, 1*movespeed));
+            Main.camera.moveWithRotation(new Vector3f(0, 0, 1 * moveSpeed));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_A)){
-            Main.camera.moveWithRotation(new Vector3f(-1*movespeed, 0, 0));
+            Main.camera.moveWithRotation(new Vector3f(-1 * moveSpeed, 0, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_D)){
-            Main.camera.moveWithRotation(new Vector3f(1*movespeed, 0, 0));
+            Main.camera.moveWithRotation(new Vector3f(1 * moveSpeed, 0, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_SPACE)){
-            Main.camera.transform.position.add(new Vector3f(0, 1*movespeed, 0));
+            Main.camera.transform.position.add(new Vector3f(0, 1 * moveSpeed, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)){
-            Main.camera.transform.position.add(new Vector3f(0, -1*movespeed, 0));
+            Main.camera.transform.position.add(new Vector3f(0, -1 * moveSpeed, 0));
         }
 
         //Rotation
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_UP)){
-            Main.camera.rotate(new Vector3f(-16*movespeed, 0, 0));
+            Main.camera.rotate(new Vector3f(-16 * moveSpeed, 0, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_DOWN)){
-            Main.camera.rotate(new Vector3f(16*movespeed, 0, 0));
+            Main.camera.rotate(new Vector3f(16 * moveSpeed, 0, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_RIGHT)){
-            Main.camera.rotate(new Vector3f(0, 16*movespeed, 0));
+            Main.camera.rotate(new Vector3f(0, 16 * moveSpeed, 0));
         }
         if (Main.keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT)){
-            Main.camera.rotate(new Vector3f(0, -16*movespeed, 0));
+            Main.camera.rotate(new Vector3f(0, -16 * moveSpeed, 0));
         }
-        movespeed/=Main.deltaTime;
+        moveSpeed /=Main.deltaTime;
+
+        Example.light0.vector3f = Main.camera.transform.position;
     }
 
 }
