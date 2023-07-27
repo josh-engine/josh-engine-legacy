@@ -3,46 +3,34 @@ package co.josh.engine.render;
 import co.josh.engine.objects.GameObject;
 
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.opengl.GL12.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL12.GL_PROJECTION;
-import static org.lwjgl.opengl.GL12.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL12.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL12.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL12.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL12.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL13.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL13.GL_PROJECTION;
+import static org.lwjgl.opengl.GL13.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL13.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL13.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL13.GL_DEPTH_BUFFER_BIT;
 
 import co.josh.engine.Main;
 import co.josh.engine.render.lights.Light;
+import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 
 public class RenderDispatcher {
 
-     float fov = 67f;
+    public boolean skyboxEnabled = false;
+    float fov = 67f;
 
-     public RenderDispatcher(){
-         updateFrustrum(0.1f, 300f);
-     }
-     /*
-     There once was a dark time when this was useful. Luckily, no more.
-     I'm keeping it here just in case I feel the need to mess with glFrustum again.
-    */
-     float PI_OVER_180 = 0.0174532925199432957692369076849f;
-     /*
-     float _180_OVER_PI =  57.2957795130823208767981548141f;
-     public float DEG_TO_RAD(float x) {
-         return (x * PI_OVER_180);
-     }
+    public RenderDispatcher(){
+         updateFrustum(0.1f, 300f);
+    }
 
-     public float RAD_TO_DEG(float x) {
-         return x * _180_OVER_PI;
-     }
-     */
-
+    float PI_OVER_180 = 0.0174532925199432957692369076849f;
 
     public boolean doPerspectiveDraw = true;
 
-    public void updateFrustrum(float near, float far){
+    public void updateFrustum(float near, float far){
         float h = (float) (Math.tan(fov * PI_OVER_180 * .5f) * near);
         float w = h * Main.currentWidth/Main.currentHeight;
         l = -w;
@@ -56,63 +44,132 @@ public class RenderDispatcher {
     public float l, r, b, t, n, f;
 
     public void render(long window){
-        //clear framebuffer. on enclosed maps this may not be needed.
-        GL12.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //Only clear color if skybox is disabled
+        GL13.glClear(skyboxEnabled ? GL_DEPTH_BUFFER_BIT : GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        GL12.glMatrixMode(GL_PROJECTION); //Setting up camera
-        GL12.glLoadIdentity();
+        GL13.glMatrixMode(GL_PROJECTION); //Setting up camera
+        GL13.glLoadIdentity();
 
-        GL12.glEnable(GL_CULL_FACE); //On by default for performance
-        GL12.glEnable(GL_DEPTH_TEST);
+        GL13.glEnable(GL_CULL_FACE); //On by default for performance
+        GL13.glEnable(GL_DEPTH_TEST);
 
-        GL12.glCullFace(GL12.GL_BACK);
+        GL13.glCullFace(GL13.GL_BACK);
 
         if (doPerspectiveDraw) {
-            GL12.glFrustum(l, r, b, t, n, f);
+            GL13.glFrustum(l, r, b, t, n, f);
 
-            GL12.glMatrixMode(GL_MODELVIEW); //Setting up render
-            GL12.glEnable(GL_TEXTURE_2D);
+            GL13.glMatrixMode(GL_MODELVIEW); //Setting up render
+            GL13.glEnable(GL_TEXTURE_2D);
 
             Vector3f pos = Main.camera.transform.position;
 
             Vector3f rot = Main.camera.transform.rotation;
 
             //Transform
-            GL12.glRotatef(rot.x, 1, 0, 0);
-            GL12.glRotatef(rot.y, 0, 1, 0);
-            GL12.glRotatef(rot.z, 0, 0, 1);
-            GL12.glTranslatef(-1*pos.x, -1*pos.y, -1*pos.z);
+            GL13.glRotatef(rot.x, 1, 0, 0);
+            GL13.glRotatef(rot.y, 0, 1, 0);
+            GL13.glRotatef(rot.z, 0, 0, 1);
+
+            if (skyboxEnabled) drawCubeMap();
+            GL13.glActiveTexture(GL13.GL_TEXTURE0);
+
+            GL13.glTranslatef(-1*pos.x, -1*pos.y, -1*pos.z);
 
             //Gameobject render
             for (GameObject gameObject : Main.gameObjects){
                 gameObject.render3d();
             }
 
-            //Light update
+            //LightComponent update
             for (Light light : Main.lights){
                 light.update();
             }
 
-            GL12.glLoadIdentity();
+            GL13.glLoadIdentity();
         }
 
-        GL12.glDisable(GL_TEXTURE_2D);
-        GL12.glDisable(GL_CULL_FACE);
+        GL13.glDisable(GL_TEXTURE_2D);
+        GL13.glDisable(GL_CULL_FACE);
 
-        GL12.glMatrixMode(GL_PROJECTION); //Setting up camera
-        GL12.glLoadIdentity();
+        GL13.glMatrixMode(GL_PROJECTION); //Setting up camera
+        GL13.glLoadIdentity();
 
-        GL12.glOrtho(0, Main.width, 0, Main.height, 0, -1);
+        GL13.glOrtho(0, Main.width, 0, Main.height, 0, -1);
 
-        GL12.glMatrixMode(GL_MODELVIEW); //Setting up render
-        GL12.glEnable(GL_TEXTURE_2D);
+        GL13.glMatrixMode(GL_MODELVIEW); //Setting up render
+        GL13.glEnable(GL_TEXTURE_2D);
 
         for (GameObject gameObject : Main.gameObjects){
             gameObject.render2d();
         }
 
-        GL12.glLoadIdentity();
+        GL13.glLoadIdentity();
 
         glfwSwapBuffers(window); // update the screen with the newest frame (swapping the buffers)
+    }
+    
+    void drawCubeMap(){
+        // Disable depth writing to ensure the skybox is drawn behind the scene
+        GL13.glDepthMask(false);
+        GL13.glDisable(GL13.GL_LIGHTING);
+        GL13.glBindTexture(GL_TEXTURE_2D, 0);
+        // Front face
+        GL13.glBindTexture(GL13.GL_TEXTURE_2D, TexturePreloader.skyboxTextures.get("front"));
+        GL13.glBegin(GL13.GL_QUADS);
+        GL13.glTexCoord2f(0, 0); GL13.glVertex3f(-1, -1, -1);
+        GL13.glTexCoord2f(1, 0); GL13.glVertex3f(1, -1, -1);
+        GL13.glTexCoord2f(1, 1); GL13.glVertex3f(1, 1, -1);
+        GL13.glTexCoord2f(0, 1); GL13.glVertex3f(-1, 1, -1);
+        GL13.glEnd();
+        GL13.glBindTexture(GL_TEXTURE_2D, 0);
+// Back face
+        GL13.glBindTexture(GL13.GL_TEXTURE_2D, TexturePreloader.skyboxTextures.get("back"));
+        GL13.glBegin(GL13.GL_QUADS);
+        GL13.glTexCoord2f(1, 1); GL13.glVertex3f(-1, 1, 1);
+        GL13.glTexCoord2f(0, 1); GL13.glVertex3f(1, 1, 1);
+        GL13.glTexCoord2f(0, 0); GL13.glVertex3f(1, -1, 1);
+        GL13.glTexCoord2f(1, 0); GL13.glVertex3f(-1, -1, 1);
+        GL13.glEnd();
+        GL13.glBindTexture(GL_TEXTURE_2D, 0);
+// Top face
+        GL13.glBindTexture(GL13.GL_TEXTURE_2D, TexturePreloader.skyboxTextures.get("top"));
+        GL13.glBegin(GL13.GL_QUADS);
+        GL13.glTexCoord2f(0, 0); GL13.glVertex3f(-1, 1, -1);
+        GL13.glTexCoord2f(1, 0); GL13.glVertex3f(1, 1, -1);
+        GL13.glTexCoord2f(1, 1); GL13.glVertex3f(1, 1, 1);
+        GL13.glTexCoord2f(0, 1); GL13.glVertex3f(-1, 1, 1);
+        GL13.glEnd();
+        GL13.glBindTexture(GL_TEXTURE_2D, 0);
+// Bottom face
+        GL13.glBindTexture(GL13.GL_TEXTURE_2D, TexturePreloader.skyboxTextures.get("bottom"));
+        GL13.glBegin(GL13.GL_QUADS);
+        GL13.glTexCoord2f(0, 0); GL13.glVertex3f(-1, -1, 1);
+        GL13.glTexCoord2f(1, 0); GL13.glVertex3f(1, -1, 1);
+        GL13.glTexCoord2f(1, 1); GL13.glVertex3f(1, -1, -1);
+        GL13.glTexCoord2f(0, 1); GL13.glVertex3f(-1, -1, -1);
+        GL13.glEnd();
+        GL13.glBindTexture(GL_TEXTURE_2D, 0);
+// Left face
+        GL13.glBindTexture(GL13.GL_TEXTURE_2D, TexturePreloader.skyboxTextures.get("left"));
+        GL13.glBegin(GL13.GL_QUADS);
+        GL13.glTexCoord2f(0, 0); GL13.glVertex3f(-1, -1, 1);
+        GL13.glTexCoord2f(1, 0); GL13.glVertex3f(-1, -1, -1);
+        GL13.glTexCoord2f(1, 1); GL13.glVertex3f(-1, 1, -1);
+        GL13.glTexCoord2f(0, 1); GL13.glVertex3f(-1, 1, 1);
+        GL13.glEnd();
+        GL13.glBindTexture(GL_TEXTURE_2D, 0);
+// Right face
+        GL13.glBindTexture(GL13.GL_TEXTURE_2D, TexturePreloader.skyboxTextures.get("right"));
+        GL13.glBegin(GL13.GL_QUADS);
+        GL13.glTexCoord2f(0, 0); GL13.glVertex3f(1, -1, -1);
+        GL13.glTexCoord2f(1, 0); GL13.glVertex3f(1, -1, 1);
+        GL13.glTexCoord2f(1, 1); GL13.glVertex3f(1, 1, 1);
+        GL13.glTexCoord2f(0, 1); GL13.glVertex3f(1, 1, -1);
+        GL13.glEnd();
+        GL13.glBindTexture(GL_TEXTURE_2D, 0);
+// Restore the previous OpenGL state
+        GL13.glDepthMask(true);
+        GL13.glEnable(GL13.GL_LIGHTING);
+        GL13.glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

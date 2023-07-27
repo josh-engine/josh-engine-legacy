@@ -1,11 +1,13 @@
-package co.josh.engine.util.model;
+package co.josh.engine.util.model.jmodel;
 
+import co.josh.engine.Main;
 import co.josh.engine.render.drawbuilder.commands.*;
+import co.josh.engine.render.lights.Light;
 import co.josh.engine.util.Transform;
 import co.josh.engine.util.render.Vertex3F;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 
 import java.util.ArrayList;
 
@@ -36,9 +38,11 @@ public class JoshModel {
         ArrayList<DrawBuilderCommand> commands = new ArrayList<>();
         commands.add(new UnbindTexturesCommand());
         if (lit){
-            commands.add(new GlEnableCommand(GL12.GL_LIGHTING));
-            commands.add(new GlEnableCommand(GL12.GL_LIGHT0));
-            commands.add(new GlEnableCommand(GL12.GL_COLOR_MATERIAL));
+            commands.add(new GlEnableCommand(GL13.GL_LIGHTING));
+            for (Light light : Main.lights){
+                commands.add(new GlEnableCommand(light.id));
+            }
+            commands.add(new GlEnableCommand(GL13.GL_COLOR_MATERIAL));
         }
         if (tex) commands.add(new BindTextureCommand(textureId));
         commands.add(new GlBeginCommand());
@@ -52,9 +56,11 @@ public class JoshModel {
         commands.add(new GlEndCommand());
         commands.add(new UnbindTexturesCommand());
         if (lit){
-            commands.add(new GlDisableCommand(GL12.GL_LIGHTING));
-            commands.add(new GlDisableCommand(GL12.GL_LIGHT0));
-            commands.add(new GlDisableCommand(GL12.GL_COLOR_MATERIAL));
+            commands.add(new GlDisableCommand(GL13.GL_LIGHTING));
+            for (Light light : Main.lights){
+                commands.add(new GlDisableCommand(light.id));
+            }
+            commands.add(new GlDisableCommand(GL13.GL_COLOR_MATERIAL));
         }
         return commands;
     }

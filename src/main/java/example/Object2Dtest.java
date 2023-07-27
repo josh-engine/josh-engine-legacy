@@ -5,17 +5,10 @@ import co.josh.engine.components.Component;
 import co.josh.engine.objects.GameObject;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.util.Transform;
-import co.josh.engine.util.model.JoshModel;
+import co.josh.engine.util.model.jmodel.JoshModel;
 import co.josh.engine.util.model.ModelReader;
-import co.josh.engine.util.render.Vertex3F;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
 public class Object2Dtest implements GameObject {

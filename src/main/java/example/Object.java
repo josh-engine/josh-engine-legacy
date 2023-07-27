@@ -5,10 +5,9 @@ import co.josh.engine.components.Component;
 import co.josh.engine.objects.GameObject;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.util.Transform;
-import co.josh.engine.util.model.JoshModel;
+import co.josh.engine.util.model.jmodel.JoshModel;
 import co.josh.engine.util.model.ModelReader;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
@@ -34,6 +33,7 @@ public class Object implements GameObject {
         this.transform.rotation = new Vector3f(0f, 0f, 0f);
         this.lastTransform.rotation = new Vector3f(0f, 0f, 0f);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
+        //This adds JoshShaders! Try disabling lighting on the model and shading by normals!
         //db.addShader(Example.setwhite);
         //db.addShader(Example.colbynorm);
     }

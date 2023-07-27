@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.system.MemoryStack;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -37,7 +37,7 @@ import java.util.Set;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -159,9 +159,9 @@ public class Main {
             throw new IllegalStateException("Unable to initialize GLFW");
 
         // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
+        glfwDefaultWindowHints(); // optional, the current window hints are already the default (except ogl context stuff)
         glfwWindowHint(GLFW_VERSION_MAJOR, 1);
-        glfwWindowHint(GLFW_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE); // the window will not stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
         glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE); //could not be me
@@ -279,13 +279,16 @@ public class Main {
 
             if (frameElapsedTime  >= frameWait){
                 deltaTime = frameElapsedTime/1000f;
+                for (GameObject gameObject : gameObjects){
+                    gameObject.getComponents().forEach(Component::onFrame);
+                }
                 try{
                     run(preRender, null);
                 } catch (Exception e){
                     e.printStackTrace();
                     return;
                 }
-                GL12.glLightModelfv(GL12.GL_LIGHT_MODEL_AMBIENT, ambient);
+                GL13.glLightModelfv(GL13.GL_LIGHT_MODEL_AMBIENT, ambient);
                 renderSystem.render(window);
                 try{
                     run(postRender, null);

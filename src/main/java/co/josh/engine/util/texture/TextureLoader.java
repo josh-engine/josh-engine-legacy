@@ -7,10 +7,11 @@ import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 import java.util.Objects;
 
 public class TextureLoader {
-    //Thanks ChatGPT
+
     public static int loadTexture(String path) {
         ByteBuffer buf = null;
         int tWidth = 0;
@@ -36,22 +37,24 @@ public class TextureLoader {
         }
 
         // Generate texture ID
-        int textureID = GL11.glGenTextures();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+        int textureID = GL13.glGenTextures();
+        GL13.glBindTexture(GL13.GL_TEXTURE_2D, textureID);
 
         // Set texture parameters
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL13.glTexParameteri(GL13.GL_TEXTURE_2D, GL13.GL_TEXTURE_WRAP_S, GL13.GL_CLAMP_TO_EDGE);
+        GL13.glTexParameteri(GL13.GL_TEXTURE_2D, GL13.GL_TEXTURE_WRAP_T, GL13.GL_CLAMP_TO_EDGE);
+        GL13.glTexParameteri(GL13.GL_TEXTURE_2D, GL13.GL_TEXTURE_WRAP_R, GL13.GL_CLAMP_TO_EDGE);
+        GL13.glTexParameteri(GL13.GL_TEXTURE_2D, GL13.GL_TEXTURE_MIN_FILTER, GL13.GL_NEAREST);
+        GL13.glTexParameteri(GL13.GL_TEXTURE_2D, GL13.GL_TEXTURE_MAG_FILTER, GL13.GL_NEAREST);
 
         // Upload texture data
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, tWidth, tHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
+        GL13.glTexImage2D(GL13.GL_TEXTURE_2D, 0, GL13.GL_RGBA, tWidth, tHeight, 0, GL13.GL_RGBA, GL13.GL_UNSIGNED_BYTE, buf);
 
         // Free image data
         STBImage.stbi_image_free(Objects.requireNonNull(buf));
 
         return textureID;
     }
+
 
 }
