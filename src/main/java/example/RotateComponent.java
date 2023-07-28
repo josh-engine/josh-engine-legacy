@@ -9,8 +9,11 @@ public class RotateComponent implements Component {
 
     GameObject parent;
 
-    public RotateComponent(GameObject parent){
+    float speed;
+
+    public RotateComponent(GameObject parent, float speed){
         this.parent = parent;
+        this.speed = speed;
     }
 
     @Override
@@ -21,7 +24,7 @@ public class RotateComponent implements Component {
     @Override
     public void onTick() {
         Transform t = parent.getTransform();
-        t.rotation = t.rotation.add(0f, 20f*Main.tickDeltaTime, 0f);
+        t.rotation = t.rotation.add(0f, speed*Main.tickDeltaTime, 0f);
         parent.setTransform(t);
     }
 

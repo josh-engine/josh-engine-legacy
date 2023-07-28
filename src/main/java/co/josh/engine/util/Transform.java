@@ -25,9 +25,22 @@ public class Transform {
         this.scale = new Vector3f(1f);
     }
 
-    public Vector3f apply(Vector3f vector){
+    public Vector3f forward(){
+        return applyRotationMatrix(new Vector3f(0, 0, -1), new Vector3f(), rotationMatrix);
+    }
+
+    public Vector3f right(){
+        return applyRotationMatrix(new Vector3f(1, 0, 0), new Vector3f(), rotationMatrix);
+    }
+
+    public Vector3f applyTo(Vector3f vector){
         updateRotationMatrix();
         return applyRotationMatrix(vector.mul(scale).add(position), position, rotationMatrix);
+    }
+
+    public Vector3f applyUnscaledTo(Vector3f vector){
+        updateRotationMatrix();
+        return applyRotationMatrix(vector.add(position), position, rotationMatrix);
     }
 
     public void updateRotationMatrix(){

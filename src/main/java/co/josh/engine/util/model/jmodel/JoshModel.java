@@ -38,6 +38,7 @@ public class JoshModel {
         ArrayList<DrawBuilderCommand> commands = new ArrayList<>();
         commands.add(new UnbindTexturesCommand());
         if (lit){
+            commands.add(new ResetMaterialCommand());
             commands.add(new GlEnableCommand(GL13.GL_LIGHTING));
             for (Light light : Main.lights){
                 commands.add(new GlEnableCommand(light.id));
@@ -48,8 +49,8 @@ public class JoshModel {
         commands.add(new GlBeginCommand());
         for (Vertex3F vertex : vertices){
             Vertex3F vert = vertex.clone();
-            vert.position = transform.apply(vert.position);
-            vert.lastposition = lastTransform.apply(vert.lastposition);
+            vert.position = transform.applyTo(vert.position);
+            vert.lastposition = lastTransform.applyTo(vert.lastposition);
             vert.normal = Transform.applyRotationMatrix(vert.normal, new Vector3f(), transform.rotationMatrix);
             commands.add(new VertexCommand(vert));
         }

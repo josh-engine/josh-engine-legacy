@@ -279,14 +279,14 @@ public class Main {
 
             if (frameElapsedTime  >= frameWait){
                 deltaTime = frameElapsedTime/1000f;
-                for (GameObject gameObject : gameObjects){
-                    gameObject.getComponents().forEach(Component::onFrame);
-                }
                 try{
                     run(preRender, null);
                 } catch (Exception e){
                     e.printStackTrace();
                     return;
+                }
+                for (GameObject gameObject : gameObjects){
+                    gameObject.getComponents().forEach(Component::onFrame);
                 }
                 GL13.glLightModelfv(GL13.GL_LIGHT_MODEL_AMBIENT, ambient);
                 renderSystem.render(window);

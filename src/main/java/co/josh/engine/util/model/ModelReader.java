@@ -3,10 +3,12 @@ package co.josh.engine.util.model;
 import co.josh.engine.Main;
 import co.josh.engine.render.drawbuilder.commands.*;
 import co.josh.engine.render.lights.Light;
+import co.josh.engine.util.exceptions.MaterialNotFoundError;
 import co.josh.engine.util.model.jmodel.JoshModel;
 import co.josh.engine.util.model.obj.OBJModel;
 import co.josh.engine.util.model.obj.OBJPreCommand;
 import co.josh.engine.util.model.obj.PreCommandType;
+import co.josh.engine.util.model.obj.mtl.Material;
 import co.josh.engine.util.render.Vertex3F;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -159,6 +161,7 @@ public class ModelReader {
             ArrayList<Vector3f> vertexPositions = new ArrayList<>();
             ArrayList<Vector2f> vertexTexcoords = new ArrayList<>();
             ArrayList<Vector3f> vertexNormals = new ArrayList<>();
+            ArrayList<Material> materials = new ArrayList<>();
             ArrayList<OBJPreCommand> objPreCommandArrayList = new ArrayList<>();
             //
             // PROCESSING THE FILE
@@ -227,6 +230,22 @@ public class ModelReader {
                                     }
                                 }
                             }
+                        }
+                        case("mtllib") -> {
+                            materials.addAll(Material.loadMTL(materialsFolder + line.split(" ")[1]));
+                        }
+                        case("usemtl") -> {
+                            Material mat = null;
+                            for (Material m : materials){
+                                if (m.name.equalsIgnoreCase(line.split(" ")[1])){
+                                    mat = m;
+                                    break;
+                                }
+                            }
+                            if (mat == null){
+                                throw new MaterialNotFoundError("Could not find " + line.split(" ")[1] + " in provided MTL file!");
+                            }
+                            objPreCommandArrayList.add(new OBJPreCommand(mat));
                         }
                     }
                 }

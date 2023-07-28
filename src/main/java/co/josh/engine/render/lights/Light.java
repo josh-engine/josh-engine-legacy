@@ -48,6 +48,6 @@ public class Light {
         GL13.glLightfv(this.id, GL13.GL_POSITION, light);
         GL13.glLightfv(this.id, GL13.GL_DIFFUSE, _diffuse);
         GL13.glLightfv(this.id, GL13.GL_SPECULAR, _specular);
-        GL13.glLightf(this.id, GL13.GL_LINEAR_ATTENUATION, 0.25f);
+        GL13.glLightf(this.id, GL13.GL_LINEAR_ATTENUATION, 1f);
     }
 }

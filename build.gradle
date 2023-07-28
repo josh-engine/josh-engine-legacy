@@ -5,8 +5,23 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'application'
 
+OperatingSystem os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem;
+project.ext.platform = ""
+if (os.isWindows()){
+    project.ext.platform = "windows"
+}
+if (os.isLinux()){
+    project.ext.platform = "linux"
+}
+if (os.isMacOsX()){
+    project.ext.platform = "macos"
+}
 project.ext.lwjglVersion = "3.3.2"
-project.ext.lwjglNatives = "natives-macos-arm64"
+
+project.ext.architecture = "-arm64"
+project.ext.lwjglNatives = "natives-$platform$architecture"
+println lwjglNatives
+
 
 repositories {
     mavenCentral()
@@ -18,6 +33,8 @@ dependencies {
 
     implementation "org.joml:joml:1.9.26-SNAPSHOT"
     implementation 'org.reflections:reflections:0.10.2'
+    implementation "io.github.spair:imgui-java-app:1.81.0"
+    implementation "io.github.spair:imgui-java-natives-$platform:1.81.0"
 
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-assimp"

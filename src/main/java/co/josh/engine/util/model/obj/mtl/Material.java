@@ -1,5 +1,6 @@
 package co.josh.engine.util.model.obj.mtl;
 
+import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -46,7 +47,7 @@ public class Material {
                 shininess);
     }
 
-    public static List<Material> load(String fileName){
+    public static List<Material> loadMTL(String fileName){
         try{
             /*
             newmtl cruiser                (Material 1)
@@ -91,7 +92,12 @@ public class Material {
                     line = line.substring(3);
                     active.shininess = Float.parseFloat(line)/7.8125f;
                 }
+                if (line.startsWith("map_Kd ") && active != null){
+                    line = line.substring(7);
+                    active.textureID = TexturePreloader.textures.get(line.substring(0, line.indexOf(".")));
+                }
             }
+            mats.add(active);
 
             return mats;
         } catch (IOException e){

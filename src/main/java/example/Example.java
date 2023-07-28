@@ -33,18 +33,22 @@ public class Example {
 
         Main.gameObjects.add(new Object(0, -3f, -5));
 
+        Main.gameObjects.get(0).addComponent(new RotateComponent(Main.gameObjects.get(0), 15f));
 
         Main.gameObjects.add(new Object2(-7f, -2f, -5));
 
-        Main.gameObjects.get(1).addComponent(new RotateComponent(Main.gameObjects.get(1)));
-
+        Main.gameObjects.get(1).addComponent(new RotateComponent(Main.gameObjects.get(1), 20f));
 
         Main.gameObjects.get(1).addComponent(new LightComponent(Main.gameObjects.get(1),
                 new Vector3f(0, -0.25f, -5f),
                 new Vector4f(0.3f, 0, 0.7f, 1f),
                 new Vector4f(0.3f, 0, 0.7f, 1f)));
 
+        //Main.gameObjects.add(new Object3(0f, 0f, 0f));
+
+        //2D rendering over 3D (UI example)
         Main.gameObjects.add(new Object2Dtest(100f, 100f, 0f));
+
     }
 
     public static Float moveSpeed = 8f;

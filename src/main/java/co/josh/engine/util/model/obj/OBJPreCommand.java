@@ -9,6 +9,11 @@ public class OBJPreCommand {
 
     public Material mtl;
 
+    public OBJPreCommand(Material mtl){
+        this.preCommandType = PreCommandType.MATERIAL;
+        this.mtl = mtl;
+    }
+
     public OBJPreCommand(int positionID){
         this.preCommandType = PreCommandType.VERTEX;
         this.positionID = positionID;

@@ -5,13 +5,14 @@ import co.josh.engine.components.Component;
 import co.josh.engine.objects.GameObject;
 import co.josh.engine.render.drawbuilder.DrawBuilder;
 import co.josh.engine.util.Transform;
-import co.josh.engine.util.model.jmodel.JoshModel;
 import co.josh.engine.util.model.ModelReader;
+import co.josh.engine.util.model.jmodel.JoshModel;
+import co.josh.engine.util.model.obj.OBJModel;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-public class Object implements GameObject {
+public class Object3 implements GameObject {
 
     ArrayList<Component> components = new ArrayList<>();
 
@@ -21,18 +22,14 @@ public class Object implements GameObject {
 
     public DrawBuilder db;
 
-    JoshModel model;
+    OBJModel model;
 
-
-    public Object(float x, float y, float z){
+    public Object3(float x, float y, float z){
         this.transform = new Transform(new Vector3f(x, y, z));
         this.lastTransform = new Transform(new Vector3f(x, y, z));
 
-        this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/stanfordbunny.obj", "", true, false);
-        this.transform.scale = new Vector3f(20f);
+        this.model = ModelReader.loadObj(Main.dir + "/josh/models/f16.obj", Main.dir + "/josh/materials/", true, true);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
-        //This adds JoshShaders! Try disabling lighting on the model and shading by normals!
-        //db.addShader(Example.setwhite);
         //db.addShader(Example.colbynorm);
     }
 
@@ -42,7 +39,7 @@ public class Object implements GameObject {
     }
 
     public String getName() {
-        return "Object";
+        return "Object3";
     }
 
     public Transform getTransform() {
