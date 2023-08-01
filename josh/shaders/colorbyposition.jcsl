@@ -1,4 +1,4 @@
-cleanStream // make sure there's nothing weird
+cleanStream // make sure there's nothing weird - This shader is meant to be analogous to colorbynormal but for 2D.
 dumpWindowInfo // window info starts at position 1 in stream
 dumpVertex // vertex info starts at position 5 in stream
 rdivide 5 1 // dividing index 5 by index 1 into index 1, this is x position

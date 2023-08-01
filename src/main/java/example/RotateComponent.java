@@ -29,11 +29,6 @@ public class RotateComponent implements Component {
     }
 
     @Override
-    public void onFrame() {
-
-    }
-
-    @Override
     public GameObject getParent() {
         return parent;
     }

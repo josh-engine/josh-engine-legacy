@@ -36,8 +36,6 @@ public class TexturePreloader {
         }
 
         if (!skip){
-            Main.renderSystem.skyboxEnabled = true;
-
             for (Path file : cubemapFiles){
                 if (file.toFile().getName().equals(".DS_Store")){
                     continue;

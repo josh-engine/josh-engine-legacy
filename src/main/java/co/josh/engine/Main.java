@@ -1,20 +1,22 @@
 package co.josh.engine;
 
+import ca.weblite.objc.Client;
+import ca.weblite.objc.Proxy;
 import co.josh.engine.objects.GameObject;
 import co.josh.engine.render.Camera;
 import co.josh.engine.render.RenderDispatcher;
 import co.josh.engine.render.joshshade.JoshShaderLoader;
 import co.josh.engine.render.lights.Light;
+import co.josh.engine.util.Transform;
 import co.josh.engine.util.annotations.hooks.*;
 import co.josh.engine.util.exceptions.WindowCreateFailure;
 import co.josh.engine.util.input.KeyboardHandler;
 import co.josh.engine.util.input.MouseHandler;
+import co.josh.engine.util.texture.ByteImage;
+import co.josh.engine.util.texture.TextureLoader;
 import org.joml.Vector3f;
 import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
-import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.system.MemoryStack;
@@ -31,6 +33,7 @@ import java.lang.reflect.Method;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
@@ -42,6 +45,10 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Main {
+
+    public static boolean runEvents = false;
+
+    public static String gameFolder = "/josh";
 
     public static int width;
     public static int height;
@@ -95,9 +102,9 @@ public class Main {
 
     public static RenderDispatcher renderSystem;
 
-    public void run() {
+    public void startEngine() {
         try{
-        init();
+            init();
         } catch (WindowCreateFailure e){
             e.printStackTrace();
             return;
@@ -128,22 +135,62 @@ public class Main {
 
     public static void runAllAnnotatedWith(Class<? extends Annotation> annotation)
             throws Exception {
-        run(getAllAnnotatedWith(annotation), null);
+        runMethods(getAllAnnotatedWith(annotation), null);
     }
-    public static void run(Set<Method> methods, Object[] parameters) throws InvocationTargetException, IllegalAccessException {
+    public static void runMethods(Set<Method> methods, Object[] parameters) throws InvocationTargetException, IllegalAccessException {
         for (Method m : methods) {
             // for simplicity, invokes methods as static without parameters
             m.invoke(m.getDeclaringClass(), parameters);
         }
     }
 
+    public static void mac_setIcon(){
+        try{
+            // Read the icon file into a byte array
+            byte[] iconData = Files.readAllBytes(Paths.get(dir + Main.gameFolder + "/engine/JELogo.icns"));
+
+            // Initialize the Objective-C client
+            Client client = Client.getInstance();
+
+            // Create an NSData object with the icon data
+            Proxy nsData = client.sendProxy("NSData", "dataWithBytes:length:", iconData, iconData.length);
+
+            // Create an NSImage object with the NSData
+            Object nsImage = client.sendProxy("NSImage", "alloc").send("initWithData:", nsData);
+
+            // Set the application icon image
+            client.sendProxy("NSApplication", "sharedApplication").send("setApplicationIconImage:", nsImage);
+        } catch (IOException e) {
+            System.out.println("Warning: Failed to set icon application!");
+        }
+
+    }
+
+    public static void win_linux_setIcon(){
+        //TODO: verify this works on linux
+        ByteImage icon = TextureLoader.loadTextureToByteImage(dir + Main.gameFolder + "/img/JELogo.png");
+        GLFWImage glfwImage = GLFWImage.malloc();
+        GLFWImage.Buffer buffer = GLFWImage.malloc(1);
+        glfwImage.set(icon.w, icon.h, icon.data);
+        buffer.put(0, glfwImage);
+        glfwSetWindowIcon(window, buffer);
+    }
+
+    public static void setIcon(){
+        if (glfwGetPlatform() == GLFW_PLATFORM_COCOA){
+            mac_setIcon();
+        }else{
+            win_linux_setIcon();
+        }
+    }
+
     private void init() throws WindowCreateFailure {
         System.out.println("Starting JoshEngine with LWJGL " + Version.getVersion());
         try {
-            if (Files.exists(Path.of(dir + "/josh/"))){
+            if (Files.exists(Path.of(dir + Main.gameFolder + "/"))){
                 System.out.println("Engine dir exists and was found.");
             }else{
-                Files.createDirectory(Path.of(dir + "/josh/"));
+                Files.createDirectory(Path.of(dir + Main.gameFolder + "/"));
                 System.out.println("Created engine dir succesfully.");
             }
 
@@ -214,13 +261,11 @@ public class Main {
 
         JoshShaderLoader.init();
 
+        setIcon();
+
         // Make the window visible
         glfwShowWindow(window);
-    }
 
-    private void loop() {
-        System.out.println("Starting game loop");
-        glfwSetTime(0);
         // don delete shit here
         GL.createCapabilities();
 
@@ -244,6 +289,11 @@ public class Main {
                 }
             }
         });
+    }
+
+    private void loop() {
+        System.out.println("Starting game loop");
+        glfwSetTime(0);
 
         long tickLastUpdateTime = System.currentTimeMillis();
         long frameLastUpdateTime = System.currentTimeMillis();
@@ -258,6 +308,9 @@ public class Main {
 
         Set<Method> preRender = getAllAnnotatedWith(PreRender.class);
         Set<Method> postRender = getAllAnnotatedWith(PostRender.class);
+
+        Set<Method> preRenderNP = getAllAnnotatedWith(PreRenderNP.class);
+        Set<Method> postRenderNP = getAllAnnotatedWith(PostRenderNP.class);
 
         Set<Method> preTick = getAllAnnotatedWith(PreTick.class);
         Set<Method> postTick = getAllAnnotatedWith(PostTick.class);
@@ -279,19 +332,21 @@ public class Main {
 
             if (frameElapsedTime  >= frameWait){
                 deltaTime = frameElapsedTime/1000f;
+                keyboard.update();
+                mouse.update();
+
                 try{
-                    run(preRender, null);
+                    runMethods(preRenderNP, null);
+                    if (runEvents) runMethods(preRender, null);
                 } catch (Exception e){
                     e.printStackTrace();
                     return;
                 }
-                for (GameObject gameObject : gameObjects){
-                    gameObject.getComponents().forEach(Component::onFrame);
-                }
                 GL13.glLightModelfv(GL13.GL_LIGHT_MODEL_AMBIENT, ambient);
                 renderSystem.render(window);
                 try{
-                    run(postRender, null);
+                    runMethods(postRenderNP, null);
+                    if (runEvents) runMethods(postRender, null);
                 } catch (Exception e){
                     e.printStackTrace();
                     return;
@@ -302,28 +357,36 @@ public class Main {
 
             if (tickElapsedTime >= tickWait) {
                 tickDeltaTime = (Main.tickElapsedTime/1000f);
-                keyboard.update();
-                mouse.update();
-
-                try{
-                    run(preTick, null);
-                } catch (Exception e){
-                    e.printStackTrace();
-                    return;
-                }
-                for (GameObject gameObject : gameObjects){
-                    gameObject.setLastTransform(gameObject.getTransform());
-                    gameObject.getComponents().forEach(Component::onTick);
-                }
-                try{
-                    run(postTick, null);
-                } catch (Exception e){
-                    e.printStackTrace();
-                    return;
+                if (runEvents) {
+                    try {
+                        runMethods(preTick, null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    for (GameObject gameObject : gameObjects) {
+                        gameObject.setLastTransform(gameObject.getTransform());
+                        gameObject.getComponents().forEach(Component::onTick);
+                    }
+                    try {
+                        runMethods(postTick, null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
                 }
                 tpsCount++;
                 tickLastUpdateTime = now;
             }
         }
+    }
+
+    public void reset(){
+        runEvents = false;
+        gameObjects.clear();
+        fps = (int) targetFps;
+        tps = (int) targetTps;
+        camera.transform = new Transform(new Vector3f());
+        camera.lastTransform = new Transform(new Vector3f());
     }
 }

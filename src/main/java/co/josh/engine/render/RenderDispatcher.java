@@ -1,5 +1,6 @@
 package co.josh.engine.render;
 
+import co.josh.engine.components.Component;
 import co.josh.engine.objects.GameObject;
 
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -19,7 +20,8 @@ import org.lwjgl.opengl.GL13;
 
 public class RenderDispatcher {
 
-    public boolean skyboxEnabled = false;
+    public boolean skyboxEnabled = true;
+
     float fov = 67f;
 
     public RenderDispatcher(){
@@ -53,6 +55,9 @@ public class RenderDispatcher {
         GL13.glEnable(GL_CULL_FACE); //On by default for performance
         GL13.glEnable(GL_DEPTH_TEST);
 
+        GL13.glEnable(GL13.GL_BLEND);
+        GL13.glBlendFunc(GL13.GL_SRC_ALPHA, GL13.GL_ONE_MINUS_SRC_ALPHA);
+
         GL13.glCullFace(GL13.GL_BACK);
 
         if (doPerspectiveDraw) {
@@ -70,7 +75,10 @@ public class RenderDispatcher {
             GL13.glRotatef(rot.y, 0, 1, 0);
             GL13.glRotatef(rot.z, 0, 0, 1);
 
-            if (skyboxEnabled) drawCubeMap();
+            if (skyboxEnabled) {
+                drawCubeMap();
+            }
+
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
 
             GL13.glTranslatef(-1*pos.x, -1*pos.y, -1*pos.z);
@@ -78,6 +86,7 @@ public class RenderDispatcher {
             //Gameobject render
             for (GameObject gameObject : Main.gameObjects){
                 gameObject.render3d();
+                gameObject.getComponents().forEach(Component::on3D);
             }
 
             //LightComponent update
@@ -101,6 +110,7 @@ public class RenderDispatcher {
 
         for (GameObject gameObject : Main.gameObjects){
             gameObject.render2d();
+            gameObject.getComponents().forEach(Component::on2D);
         }
 
         GL13.glLoadIdentity();

@@ -36,7 +36,7 @@ public class MouseHandler {
             public void invoke(long window, int button, int action, int mods) {
                 Object[] params = {button, action};
                 try {
-                    Main.run(onClickRunnables, params);
+                    Main.runMethods(onClickRunnables, params);
                 } catch (InvocationTargetException | IllegalAccessException e) {
                     throw new MethodInvocationFailure(onClickRunnables);
                 }

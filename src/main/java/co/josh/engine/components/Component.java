@@ -6,9 +6,17 @@ public interface Component {
 
     String getName();
 
-    void onTick();
+    default void onTick(){
 
-    void onFrame();
+    }
+
+    default void on3D(){
+
+    }
+
+    default void on2D(){
+
+    }
 
     GameObject getParent();
 

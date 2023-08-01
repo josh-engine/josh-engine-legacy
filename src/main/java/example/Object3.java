@@ -28,7 +28,7 @@ public class Object3 implements GameObject {
         this.transform = new Transform(new Vector3f(x, y, z));
         this.lastTransform = new Transform(new Vector3f(x, y, z));
 
-        this.model = ModelReader.loadObj(Main.dir + "/josh/models/f16.obj", Main.dir + "/josh/materials/", true, true);
+        this.model = ModelReader.loadObj(Main.dir + Main.gameFolder + "/models/f16.obj", Main.dir + Main.gameFolder + "/materials/", true, true);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
         //db.addShader(Example.colbynorm);
     }

@@ -28,7 +28,7 @@ public class Object implements GameObject {
         this.transform = new Transform(new Vector3f(x, y, z));
         this.lastTransform = new Transform(new Vector3f(x, y, z));
 
-        this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/stanfordbunny.obj", "", true, false);
+        this.model = ModelReader.loadObjToJosh(Main.dir + Main.gameFolder + "/models/stanfordbunny.obj", "", true, false);
         this.transform.scale = new Vector3f(20f);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
         //This adds JoshShaders! Try disabling lighting on the model and shading by normals!

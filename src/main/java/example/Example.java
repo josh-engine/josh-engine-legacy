@@ -4,6 +4,8 @@ import co.josh.engine.Main;
 import co.josh.engine.components.builtin.LightComponent;
 import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.render.lights.Light;
+import co.josh.engine.util.annotations.hooks.OnKey;
+import co.josh.engine.util.annotations.hooks.PostRenderNP;
 import co.josh.engine.util.annotations.hooks.PostTick;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
@@ -11,25 +13,27 @@ import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 
 public class Example {
-    public static JShader setwhite = new JShader("/josh/shaders/resetcolor.jcsl");
+    public static JShader setwhite = new JShader(Main.gameFolder + "/shaders/resetcolor.jcsl");
 
-    public static JShader colbynorm = new JShader("/josh/shaders/colorbynormal.jcsl");
+    public static JShader colbynorm = new JShader(Main.gameFolder + "/shaders/colorbynormal.jcsl");
 
     public static Light light0;
 
     @co.josh.engine.util.annotations.hooks.Startup
     public static void onStart(){
         System.out.println("Look at me! I'm a startup script!");
-
         Main.ambient = new float[]{0.15f, 0.15f, 0.20f, 1f};
+        TexturePreloader.load(Main.gameFolder + "/img/", Main.gameFolder + "/skybox/");
 
-        TexturePreloader.load("/josh/img/", "/josh/skybox/");
+        Main.runEvents = true;
+        Main.renderSystem.skyboxEnabled = true;
 
+
+        //This creates a new light object, but doesn't register it to be rendered or do anything to set up the values
         light0 = new Light();
-
+        //This actually registers the light with the renderer and returns a boolean telling you if it registered successfully.
         light0.create(new Vector3f(-1f, 1f, 1f), false,
                 new Vector4f(0.47f, 0.47f, 0.45f, 1f), new Vector4f( 0.7f, 0.7f, 0.6f, 1f));
-
 
         Main.gameObjects.add(new Object(0, -3f, -5));
 
@@ -48,12 +52,17 @@ public class Example {
 
         //2D rendering over 3D (UI example)
         Main.gameObjects.add(new Object2Dtest(100f, 100f, 0f));
-
     }
 
     public static Float moveSpeed = 8f;
 
-    @PostTick
+    @OnKey
+    public static void key(int key, int action){
+        if (key == GLFW.GLFW_KEY_P && action == GLFW.GLFW_PRESS){
+            Main.runEvents = !Main.runEvents; //Toggle pause
+        }
+    }
+    @PostRenderNP
     public static void movement(){
         Main.camera.updateLast();
         moveSpeed *= Main.deltaTime;

@@ -20,16 +20,15 @@ public class Object2Dtest implements GameObject {
     Transform lastTransform;
 
     public DrawBuilder db;
-
+    
     JoshModel model;
 
-    JoshModel b;
 
     public Object2Dtest(float x, float y, float z){
         this.transform = new Transform(new Vector3f(x, y, z));
         this.lastTransform = new Transform(new Vector3f(x, y, z));
 
-        this.model = ModelReader.loadJoshFormat(Main.dir + "/josh/models/e.josh", false);
+        this.model = ModelReader.loadJoshFormat(Main.dir + Main.gameFolder + "/models/e.josh", false);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
         //db.addShader(Example.colbynorm);
     }

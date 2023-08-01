@@ -27,7 +27,7 @@ public class KeyboardHandler {
                 keys[key] = (action != GLFW.GLFW_RELEASE);
                 Object[] params = {key, action};
                 try {
-                    Main.run(onKeyRunnables, params);
+                    Main.runMethods(onKeyRunnables, params);
                 } catch (InvocationTargetException | IllegalAccessException e) {
                     throw new MethodInvocationFailure(onKeyRunnables);
                 }

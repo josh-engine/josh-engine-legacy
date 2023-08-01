@@ -7,6 +7,7 @@ import co.josh.engine.util.Transform;
 import co.josh.engine.util.render.Vertex3F;
 import co.josh.engine.util.texture.TexturePreloader;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL13;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class JoshModel {
 
     String textureName;
 
-    int textureId;
+    public int textureId;
 
     public int GL_MODE;
 
@@ -35,6 +36,10 @@ public class JoshModel {
     }
 
     public ArrayList<DrawBuilderCommand> drawBuilderCommands(Transform transform, Transform lastTransform){
+        return drawBuilderCommands(transform, lastTransform, new Vector4f(1f));
+    }
+
+    public ArrayList<DrawBuilderCommand> drawBuilderCommands(Transform transform, Transform lastTransform, Vector4f color){
         ArrayList<DrawBuilderCommand> commands = new ArrayList<>();
         commands.add(new UnbindTexturesCommand());
         if (lit){
@@ -52,6 +57,7 @@ public class JoshModel {
             vert.position = transform.applyTo(vert.position);
             vert.lastposition = lastTransform.applyTo(vert.lastposition);
             vert.normal = Transform.applyRotationMatrix(vert.normal, new Vector3f(), transform.rotationMatrix);
+            vert.color = color;
             commands.add(new VertexCommand(vert));
         }
         commands.add(new GlEndCommand());

@@ -29,7 +29,7 @@ public class Object2 implements GameObject {
 
         transform.scale = new Vector3f(3f);
 
-        this.model = ModelReader.loadObjToJosh(Main.dir + "/josh/models/cruiser.obj", "cruiser", true, true);
+        this.model = ModelReader.loadObjToJosh(Main.dir + Main.gameFolder + "/models/cruiser.obj", "cruiser", true, true);
         db = new DrawBuilder(Main.camera, model.GL_MODE);
         //db.addShader(Example.colbynorm);
     }

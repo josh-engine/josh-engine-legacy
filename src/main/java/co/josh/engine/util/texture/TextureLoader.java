@@ -12,6 +12,32 @@ import java.util.Objects;
 
 public class TextureLoader {
 
+    public static ByteImage loadTextureToByteImage(String path){
+        ByteBuffer buf = null;
+        int tWidth = 0;
+        int tHeight = 0;
+
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer w = stack.mallocInt(1);
+            IntBuffer h = stack.mallocInt(1);
+            IntBuffer comp = stack.mallocInt(1);
+
+            // Load image data
+            STBImage.stbi_set_flip_vertically_on_load(true);
+            buf = STBImage.stbi_load(path, w, h, comp, 4);
+            if (buf == null) {
+                throw new TextureLoadFailure(System.lineSeparator() + STBImage.stbi_failure_reason());
+            }
+
+            // Get image width and height
+            tWidth = w.get();
+            tHeight = h.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ByteImage(tWidth, tHeight, buf);
+    }
+
     public static int loadTexture(String path) {
         ByteBuffer buf = null;
         int tWidth = 0;
