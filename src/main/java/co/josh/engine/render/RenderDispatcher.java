@@ -46,8 +46,7 @@ public class RenderDispatcher {
     public float l, r, b, t, n, f;
 
     public void render(long window){
-        //Only clear color if skybox is disabled
-        GL13.glClear(skyboxEnabled ? GL_DEPTH_BUFFER_BIT : GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GL13.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         GL13.glMatrixMode(GL_PROJECTION); //Setting up camera
         GL13.glLoadIdentity();
@@ -99,6 +98,7 @@ public class RenderDispatcher {
 
         GL13.glDisable(GL_TEXTURE_2D);
         GL13.glDisable(GL_CULL_FACE);
+        GL13.glDisable(GL_DEPTH_TEST);
 
         GL13.glMatrixMode(GL_PROJECTION); //Setting up camera
         GL13.glLoadIdentity();
@@ -126,6 +126,7 @@ public class RenderDispatcher {
         // Front face
         GL13.glBindTexture(GL13.GL_TEXTURE_2D, TexturePreloader.skyboxTextures.get("front"));
         GL13.glBegin(GL13.GL_QUADS);
+        GL13.glColor4f(1f, 1f, 1f, 1f);
         GL13.glTexCoord2f(0, 0); GL13.glVertex3f(-1, -1, -1);
         GL13.glTexCoord2f(1, 0); GL13.glVertex3f(1, -1, -1);
         GL13.glTexCoord2f(1, 1); GL13.glVertex3f(1, 1, -1);

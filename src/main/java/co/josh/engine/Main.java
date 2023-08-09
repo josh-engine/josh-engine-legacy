@@ -91,8 +91,8 @@ public class Main {
 
     public static String dir = System.getProperty("user.dir");
 
-    public int fps;
-    public int fpsCount;
+    public static int fps;
+    public static int fpsCount;
     public static int tps = 20;
     public static int tpsCount;
     public float clockSubtract = 0;

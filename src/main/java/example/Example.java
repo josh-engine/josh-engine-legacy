@@ -6,11 +6,14 @@ import co.josh.engine.render.joshshade.JShader;
 import co.josh.engine.render.lights.Light;
 import co.josh.engine.util.annotations.hooks.OnKey;
 import co.josh.engine.util.annotations.hooks.PostRenderNP;
-import co.josh.engine.util.annotations.hooks.PostTick;
 import co.josh.engine.util.texture.TexturePreloader;
+import co.josh.engine.util.tile.TileGrid;
+import co.josh.engine.util.tile.draw.TileGridRendererComponent;
+import co.josh.engine.util.tile.procedural.wfc.WFCObject;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
+
 
 public class Example {
     public static JShader setwhite = new JShader(Main.gameFolder + "/shaders/resetcolor.jcsl");
@@ -22,6 +25,35 @@ public class Example {
     @co.josh.engine.util.annotations.hooks.Startup
     public static void onStart(){
         System.out.println("Look at me! I'm a startup script!");
+        TileGrid tileGrid = new TileGrid(5, 5);
+
+        tileGrid.setTile(0, 2, 1, "Test");
+        tileGrid.setTile(1, 2, 1, "Test");
+        tileGrid.setTile(2, 2, 1, "Test");
+        tileGrid.setTile(3, 2, 1, "Test");
+        tileGrid.setTile(4, 2, 1, "Test");
+
+        tileGrid.setTile(2, 0, 2, "Test");
+        tileGrid.setTile(2, 1, 2, "Test");
+        tileGrid.setTile(2, 2, 3, "Test");
+        tileGrid.setTile(2, 3, 2, "Test");
+        tileGrid.setTile(2, 4, 2, "Test");
+
+        WFCObject a = new WFCObject();
+        a.wfcParse(tileGrid);
+
+        TileGrid generated = new TileGrid(1, 1);
+        boolean generatedSuccessfully = false;
+        while (!generatedSuccessfully){
+            try{
+                generated = a.wfcGen(20, 20);
+                generatedSuccessfully = true;
+            } catch (Exception ignored){
+                //redo
+            }
+        }
+
+
         Main.ambient = new float[]{0.15f, 0.15f, 0.20f, 1f};
         TexturePreloader.load(Main.gameFolder + "/img/", Main.gameFolder + "/skybox/");
 
@@ -52,6 +84,8 @@ public class Example {
 
         //2D rendering over 3D (UI example)
         Main.gameObjects.add(new Object2Dtest(100f, 100f, 0f));
+
+        Main.gameObjects.get(2).addComponent(new TileGridRendererComponent(Main.gameObjects.get(2), generated, 10f));
     }
 
     public static Float moveSpeed = 8f;
