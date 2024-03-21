@@ -3,7 +3,7 @@
 
 
 Hello, and welcome to a technological innovation of the century! 
-The latest JoshCo Game Engine is here and open source for all.
+The ~~latest~~ old JoshCo Game Engine is here and open source for all.
 
 Unfortunately, we all know it sucks. If you'd like to help make it suck less, here's some basic rules to follow when fixing our crapbucket:
 
